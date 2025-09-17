@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+    <h1>Lista de despesas</h1>
+    <a href="{% url 'nova_despesa' %}">+ Nova Despesa</a>
+
+    <ul>
+        {% for despesa in despesas %}
+        <li>
+            {{despesa.nom} } - R$ {{despesa.valor}} - {{despesa.categoria}} - {{despesa.descricao}} - (vence em {{despesa.data_pagamento}})
+            {% if despesa.pago %}
+            ✅ pago
+            {% else %}
+            ❌ Pendente
+            {% endif %}
+        </li>
+        {% empty %}
+        <li>Nenhuma despesa cadastrada.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -17,8 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from rendamensal.views import cadastro_renda
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', cadastro_renda, name = 'cadastro_renda'),
+    path('despesas/', include('despesas.urls')),
 ]
