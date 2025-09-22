@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .forms import DespesaForm
 from .models import Despesa
+from .forms import DespesaForm
 
 # Create your views here.
 def lista_despesas(request):
@@ -12,8 +12,9 @@ def nova_despesa(request):
         form = DespesaForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('nova_despesa')
+            return redirect('lista_despesas')
     
     else: 
         form = DespesaForm()
-        return render(request, 'despesas/nova_despesa', {'form': form})
+
+    return render(request, 'despesas/nova_despesa.html', {'form': form})

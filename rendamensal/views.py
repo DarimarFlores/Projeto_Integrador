@@ -14,5 +14,5 @@ def cadastro_renda(request):
         form = RendaForm()
     
     rendas = Renda.objects.all()
-    return render(request, 'rendamensal/cadastro.html', {'form': form, 'rendas': rendas})
+    return render(request, 'rendamensal/renda_index.html', {'form': form, 'rendas': rendas})
 

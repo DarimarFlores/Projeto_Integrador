@@ -12,7 +12,7 @@
     <ul>
         {% for despesa in despesas %}
         <li>
-            {{despesa.nom} } - R$ {{despesa.valor}} - {{despesa.categoria}} - {{despesa.descricao}} - (vence em {{despesa.data_pagamento}})
+            {{despesa.nome}} - R$ {{despesa.valor}} - {{despesa.categoria}} - {{despesa.descricao}} - (vence em {{despesa.data_pagamento}})
             {% if despesa.pago %}
             ✅ pago
             {% else %}
