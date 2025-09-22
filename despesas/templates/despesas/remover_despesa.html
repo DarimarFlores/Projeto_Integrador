@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remover Despesa</title>
+</head>
+<body>
+    <h1>Remover Despesa</h1>
+    <p>Tem certeza que deseja remover a despesa <b>{{despesa.nome}}?</b></p>
+     <form method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit">Confirmar Remoção</button>
+    </form>
+    <a href="{% url 'lista_despesas' %}">Cancelar</a>
+</body>
+</html>

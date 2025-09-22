@@ -1,27 +1,49 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title></title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Lista de despesas</h1>
     <a href="{% url 'nova_despesa' %}">+ Nova Despesa</a>
 
-    <ul>
+    <table border="1" cellpadding="5" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Valor</th>
+          <th>Categoria</th>
+          <th>Descrição</th>
+          <th>Data de Pagamento</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
         {% for despesa in despesas %}
-        <li>
-            {{despesa.nome}} - R$ {{despesa.valor}} - {{despesa.categoria}} - {{despesa.descricao}} - (vence em {{despesa.data_pagamento}})
-            {% if despesa.pago %}
-            ✅ pago
-            {% else %}
-            ❌ Pendente
-            {% endif %}
-        </li>
+
+        <tr>
+          <td>{{despesa.nome}}</td>
+          <td>R$ {{despesa.valor}}</td>
+          <td>{{despesa.categoria}}</td>
+          <td>{{despesa.descricao}}</td>
+          <td>{{despesa.data_pagamento}}</td>
+          <td>
+            {% if despesa.pago %} ✅ pago {% else %} ❌ Pendente {% endif %}
+          </td>
+          <td>
+            <a href="{% url 'editar_despesa' despesa.id %}">Editar</a>
+            <a href="{% url 'remover_despesa' despesa.id %}">Remover</a>
+          </td>
+        </tr>
         {% empty %}
-        <li>Nenhuma despesa cadastrada.</li>
+        <tr>
+          <td colspan="7">Nenhuma despesa cadastrada.</td>
+        </tr>
         {% endfor %}
-    </ul>
-</body>
+      </tbody>
+    </table>
+  </body>
 </html>
