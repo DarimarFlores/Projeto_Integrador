@@ -14,8 +14,8 @@
         <tr>
           <th>Nome</th>
           <th>Valor</th>
-          <th>Categoria</th>
-          <th>Descrição</th>
+          <th>Frequencia</th>
+          <th>Tipo</th>
           <th>Data de Pagamento</th>
           <th>Status</th>
           <th>Ações</th>
@@ -27,8 +27,8 @@
         <tr>
           <td>{{despesa.nome}}</td>
           <td>R$ {{despesa.valor}}</td>
-          <td>{{despesa.categoria}}</td>
-          <td>{{despesa.descricao}}</td>
+          <td>{{despesa.get_frequencia_display}}</td>
+          <td>{{despesa.get_tipo_display}}</td>
           <td>{{despesa.data_pagamento}}</td>
           <td>
             {% if despesa.pago %} ✅ pago {% else %} ❌ Pendente {% endif %}
