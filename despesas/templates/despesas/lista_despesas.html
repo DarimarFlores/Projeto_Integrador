@@ -9,6 +9,32 @@
     <h1>Lista de despesas</h1>
     <a href="{% url 'nova_despesa' %}">+ Nova Despesa</a>
 
+    <h2>Filtros</h2>
+    <form method="get">
+      <label for="tipo">Tipo</label>
+      <select name="tipo" id="tipo">
+        <option value="">Todos</option>
+        <option value="GF" {% if tipo == "GF" %}selected{%endif%}>Gasto formiga</option>
+        <option value="FX" {% if tipo == "FX" %}selected{%endif%}>Fixa</option>
+        <option value="V" {% if tipo == "V" %}selected{%endif%}>Variável</option>
+         <option value="I" {% if tipo == "I" %}selected{%endif%}>Investimento</option>
+      </select>
+
+      <label for="frequencia">Frequência</label>
+      <select name="frequencia" id="frequencia">
+        <option value="">Todas</option>
+        <option value="D" {%if frequencia == "D" %}selected{%endif%}>Diária</option>
+        <option value="S" {%if frequencia == "S" %}selected{%endif%}>Semanal</option>
+        <option value="M" {%if frequencia == "M" %}selected{%endif%}>Mensal</option>
+        <option value="SM" {%if frequencia == "SM" %}selected{%endif%}>Semestral</option>
+        <option value="A" {%if frequencia == "A" %}selected{%endif%}>Anual</option>
+      </select>
+
+      <button type="submit">Filtrar</button>
+
+
+    </form>
+
     <table border="1" cellpadding="5" cellspacing="0">
       <thead>
         <tr>

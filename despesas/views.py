@@ -5,7 +5,23 @@ from .forms import DespesaForm
 # Create your views here.
 def lista_despesas(request):
     despesas = Despesa.objects.all()
-    return render(request, 'despesas/lista_despesas.html', {'despesas': despesas})
+
+    #pega os flitros enviados na url
+    tipo = request.GET.get('tipo')
+    frequencia = request.GET.get('frequencia')
+
+    if tipo:
+        despesas = despesas.filter(tipo=tipo)
+    
+    if frequencia:
+        despesas = despesas.filter(frequancia=frequancia)
+
+    
+    return render(request, 'despesas/lista_despesas.html', {
+        'despesas': despesas,
+        'tipo': tipo,
+        'frequencia': frequencia,
+    })
 
 def nova_despesa(request):
     if request.method == 'POST':
