@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editar Renda</title>
+  </head>
+  <body>
+    <h1>Editar Renda</h1>
+    <form method="POST">
+      {% csrf_token %} {{ form.as_p }}
+      <button type="submit">Salvar Alterações</button>
+      <a href="{% url 'cadastro_renda' %}"> Cancelar</a>
+    </form>
+  </body>
+</html>

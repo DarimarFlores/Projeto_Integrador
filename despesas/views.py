@@ -9,18 +9,24 @@ def lista_despesas(request):
     #pega os flitros enviados na url
     tipo = request.GET.get('tipo')
     frequencia = request.GET.get('frequencia')
+    status = request.GET.get('status')
 
     if tipo:
         despesas = despesas.filter(tipo=tipo)
     
     if frequencia:
-        despesas = despesas.filter(frequancia=frequancia)
+        despesas = despesas.filter(frequencia=frequencia)
 
+    if status == "pago":
+       despesas = despesas.filter(pago=True)
+    elif status == "pendente":
+        despesas = despesas.filter(pago=False)
     
     return render(request, 'despesas/lista_despesas.html', {
         'despesas': despesas,
         'tipo': tipo,
         'frequencia': frequencia,
+        'status': status,
     })
 
 def nova_despesa(request):
