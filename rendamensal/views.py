@@ -16,3 +16,4 @@ def cadastro_renda(request):
     rendas = Renda.objects.all()
     return render(request, 'rendamensal/renda_index.html', {'form': form, 'rendas': rendas})
 
+#prova do que gitignore esta funcionando
