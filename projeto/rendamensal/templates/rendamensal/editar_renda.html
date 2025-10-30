@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Editar Renda{% endblock %}
+{% block content %}
+
+<h2>Editar Renda</h2>
+
+<div class="card">
+  <form method="POST">  {# não precisa action: envia para a própria URL /editar/<id>/ #}
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">Salvar</button>
+    <a href="{% url 'rendamensal:cadastro_renda' %}" class="btn" style="margin-left:8px;">Cancelar</a>
+  </form>
+</div>
+
+{% endblock %}

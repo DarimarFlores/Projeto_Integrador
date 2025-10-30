@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Renda Mensal{% endblock %}
+{% block content %}
+
+<h1>Renda Mensal</h1>
+
+<h2>Adicionar nova renda</h2>
+<div class="card">
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">Salvar</button>
+  </form>
+</div>
+
+<h2>Listagem das Rendas</h2>
+<div class="card">
+  <ul>
+    {% for renda in rendas %}
+      <li>
+        {{ renda.mes }} – {{ renda.nome }} – {{ renda.get_tipo_display }} –
+        R$ {{ renda.valor|floatformat:2 }} – {{ renda.data_recebimento|date:"d/m/Y" }}
+        | <a href="{% url 'rendamensal:editar_renda' renda.id %}">Editar</a>
+        | <a href="{% url 'rendamensal:remover_renda' renda.id %}"
+             onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
+      </li>
+    {% empty %}
+      <li>Nenhuma renda cadastrada.</li>
+    {% endfor %}
+  </ul>
+</div>
+
+<h3>Totais por Mês</h3>
+<div class="card">
+  <ul>
+    {% for item in totais_por_mes %}
+      <li><strong>{{ item.mes }}</strong>: R$ {{ item.total_mes|floatformat:2 }}</li>
+    {% empty %}
+      <li>Nenhum total disponível.</li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% endblock %}
