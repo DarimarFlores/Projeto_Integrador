@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'projeto.rendamensal',
     'projeto.despesas',
+    'projeto.financiamentos',
 ]
 
 MIDDLEWARE = [

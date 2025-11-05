@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Início{% endblock %}
+
+{% block content %}
+<h1>Resumo do mês de {{ mes_atual_nome }}</h1>
+
+<div class="card">
+  <p>Aqui está um resumo das suas finanças no mês atual.</p>
+</div>
+
+<div class="card">
+  <h2>Totais do mês</h2>
+  <ul>
+    <li><strong>Renda:</strong> R$ {{ total_renda|floatformat:2 }}</li>
+    <li><strong>Despesas:</strong> R$ {{ total_despesas|floatformat:2 }}</li>
+    <li><strong>Financiamentos:</strong> R$ {{ total_financiamentos|floatformat:2 }}</li>
+  </ul>
+
+  <h3>
+    Saldo do mês:
+    {% if saldo >= 0 %}
+      <span style="color: #00b894;">R$ {{ saldo|floatformat:2 }}</span>
+    {% else %}
+      <span style="color: #ff7675;">R$ {{ saldo|floatformat:2 }}</span>
+    {% endif %}
+  </h3>
+</div>
+
+<div class="card">
+  <h2>Relatórios detalhados</h2>
+  <p>Veja os detalhes de cada área:</p>
+  <ul>
+    <li><a href="{% url 'rendamensal:cadastro_renda' %}" class="btn">Ver Renda Mensal</a></li>
+    <li><a href="{% url 'despesas:lista_despesas' %}" class="btn">Ver Despesas</a></li>
+    <li><a href="{% url 'financiamentos:lista_financiamentos' %}" class="btn">Ver Financiamentos</a></li>
+  </ul>
+</div>
+{% endblock %}

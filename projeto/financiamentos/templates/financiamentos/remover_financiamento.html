@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Remover Financiamento{% endblock %}
+{% block content %}
+
+<h1>Remover Financiamento</h1>
+<p>Tem certeza que deseja remover o financiamento de <b>{{ financiamento.credor }}</b>?</p>
+
+<form method="POST">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">Confirmar Remoção</button>
+</form>
+
+<a href="{% url 'financiamentos:lista_financiamentos' %}" class="btn">Cancelar</a>
+
+{% endblock %}

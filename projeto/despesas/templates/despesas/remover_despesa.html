@@ -1,18 +1,25 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Remover Despesa</title>
-</head>
-<body>
-    <h1>Remover Despesa</h1>
-    <p>Tem certeza que deseja remover a despesa <b>{{despesa.nome}}?</b></p>
-     <form method="POST">
-        {% csrf_token %}
-        {{form.as_p}}
-        <button type="submit">Confirmar Remoção</button>
-    </form>
-    <a href="{% url 'lista_despesas' %}">Cancelar</a>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Remover despesa{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="h4 mb-3 text-danger">Remover despesa</h1>
+
+  <div class="alert alert-warning">
+    Tem certeza que deseja remover a despesa
+    <strong>{{ despesa.nome }}</strong>?
+    Essa ação não pode ser desfeita.
+  </div>
+
+  <form method="post" class="d-flex gap-2">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">
+      Confirmar remoção
+    </button>
+    <a href="{% url 'despesas:lista_despesas' %}" class="btn btn-secondary">
+      Cancelar
+    </a>
+  </form>
+</div>
+{% endblock %}

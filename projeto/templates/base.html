@@ -14,7 +14,8 @@
             <nav class="nav">
                 <a href="/">Início</a>
                 <a href="{% url 'rendamensal:cadastro_renda' %}">Renda Mensal</a>
-                <a href="/despesas/">Despesas</a>
+                <a href="{% url 'despesas:lista_despesas' %}">Despesas</a>
+                <a href="{% url 'financiamentos:lista_financiamentos' %}">Financiamentos</a>
             </nav>
         </div>
     </header>
@@ -25,10 +26,8 @@
         </div>
     </main>
 
-    <footer class="app-footer">
-        <div class="container">
-            <small>© {% now "Y" %} - Todos os direitos reservados</small>
-        </div>
+    <footer class="footer">
+    <p>© 2025 - Todos os direitos reservados</p>
     </footer>
     
 </body>

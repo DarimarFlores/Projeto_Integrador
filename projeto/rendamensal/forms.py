@@ -2,13 +2,19 @@ from django import forms
 from .models import Renda
 
 class RendaForm(forms.ModelForm):
+    data_recebimento = forms.DateField(
+        required=False,
+        widget=forms.DateInput(
+            attrs={'type': 'date'},
+            format='%Y-%m-%d'
+        ),
+        input_formats=['%Y-%m-%d'],
+    )
+
     class Meta:
         model = Renda
         fields = '__all__'
-        widgets = {
-            'data_recebimento': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
-        }
-    
-    def __init_(self, *args, **kwargs):
+
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['data_recibimento'].input_formats = ['%Y-%m-%d']
+        self.fields['data_recebimento'].input_formats = ['%Y-%m-%d']
