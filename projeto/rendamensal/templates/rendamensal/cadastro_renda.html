@@ -14,56 +14,67 @@
   </div>
 
   <!-- Filtro por mês -->
-  <h2 class="h5">Filtrar por mês</h2>
-  <div class="card mb-3">
-    <div class="card-body">
-      <form method="GET" class="row g-2 align-items-end">
-        <div class="col-sm-6 col-md-4">
-          <label for="mes" class="form-label">Selecione o mês:</label>
-          <select name="mes" id="mes" class="form-select form-select-sm" onchange="this.form.submit()">
-            <option value="">Todos os meses</option>
-              {% for codigo, nome_mes in meses %}
-                <option value="{{ codigo }}" {% if mes_atual == codigo %}selected{% endif %}>
-                  {{ nome_mes }}
-                </option>
-              {% endfor %}
-          </select>
-        </div>
-        <noscript>
-          <div class="col-12 mt-2">
-            <button type="submit" class="btn btn-outline-primary btn-sm">Filtrar</button>
-          </div>
-        </noscript>
-      </form>
+  <div class="card">
+  <form method="GET">
+    <label for="mes">Selecione o mês:</label>
+    <select name="mes" id="mes" onchange="this.form.submit()">
+      <option value="" {% if not mes_atual %}selected{% endif %}>-- Todos os meses --</option>
+      {% for codigo, nome_mes in meses %}
+        <option value="{{ codigo }}" {% if mes_atual == codigo %}selected{% endif %}>
+          {{ nome_mes }}
+        </option>
+      {% endfor %}
+    </select>
+  </form>
+</div>
+
+<!-- Total do mês atual -->
+  {% if mostrar_total_mes %}
+    <div class="card mb-3">
+      <div class="card-body">
+        <h3 class="h6 mb-0">
+          Total do mês:
+          {% for codigo, nome_mes in meses %}
+            {% if codigo == mes_atual %}
+              {{ nome_mes }}
+            {% endif %}
+          {% endfor %}
+        – <span class="fw-bold text-success">
+            R$ {{ total_mes_atual|floatformat:2 }}
+          </span>
+        </h3>
+      </div>
     </div>
-  </div>
+  {% endif %}
 
   <!-- Lista de rendas do mês atual -->
-  <h2 class="h5">
-    Listagem das Rendas –
-    {% if mes_atual %}
-      {% for codigo, nome_mes in meses %}
-        {% if mes_atual == codigo %}
-          {{ nome_mes }}
-        {% endif %}
-      {% endfor %}
-    {% else %}
-      Todos os meses
-    {% endif %}
+  {% if mes_atual %}
+  <!-- Quando um mês foi selecionado (ou mês atual no primeiro acesso) -->
+  <h2 class="h5 mt-4">
+    Rendas de
+    {% for codigo, nome_mes in meses %}
+      {% if codigo == mes_atual %}
+        {{ nome_mes }}
+      {% endif %}
+    {% endfor %}
   </h2>
+{% else %}
+  <!-- Quando está em "Todos os meses" -->
+  <h2 class="h5 mt-4">
+    Histórico de todas as rendas
+  </h2>
+{% endif %}
 
-  <div class="card mb-3">
-    <div class="card-body">
-      <ul class="list-unstyled mb-0">
-        {% for renda in rendas %}
-        <li class="linha-renda mb-2">
-          <span class="linha-renda-texto">
-            {{ renda.get_mes_display }} – {{ renda.get_tipo_display }} –
-            R$ {{ renda.valor|floatformat:2 }} –
-            {{ renda.data_recebimento|date:"d/m/Y" }}
-          </span>
+<div class="card">
+  <ul>
+    {% for renda in rendas %}
+      <li>
+        {{ renda.get_mes_display }} – {{ renda.get_tipo_display }} –
+        R$ {{ renda.valor|floatformat:2 }} –
+        {{ renda.data_recebimento|date:"d/m/Y" }}
 
-          <span class="tabela-acoes">
+        {% if mostrar_botoes %}
+          <div class="tabela-acoes" style="margin-left: 8px;">
             <a href="{% url 'rendamensal:editar_renda' renda.id %}?mes={{ mes_atual }}" class="btn-acao">
               Editar
             </a>
@@ -72,51 +83,14 @@
                onclick="return confirm('Tem certeza que deseja excluir?')">
               Excluir
             </a>
-          </span>
-        </li>
-      {% empty %}
-          <li>Nenhuma renda cadastrada para este mês.</li>
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
-
-  <!-- Total do mês atual -->
-  <h3 class="h6">
-    {% if mes_atual %}
-      Total do mês:
-      {% for codigo, nome_mes in meses %}
-        {% if mes_atual == codigo %}
-          {{ nome_mes }}
+          </div>
         {% endif %}
-      {% endfor %}
-    {% else %}
-      Total de todas as rendas:
-    {% endif %}
-  – <span class="fw-bold text-success">R$ {{ total_mes_atual|floatformat:2 }}</span>
-</h3>
-
-  <!-- Totais por mês -->
-  <div class="card mb-3">
-    <div class="card-body">
-      <ul class="list-unstyled mb-0">
-        {% for item in totais_por_mes %}
-          <li>
-            <strong>
-              {% for codigo, nome_mes in meses %}
-                {% if item.mes == codigo %}
-                  {{ nome_mes }}
-                {% endif %}
-              {% endfor %}
-            </strong>
-            — R$ {{ item.total_mes|floatformat:2 }}
-          </li>
-        {% empty %}
-          <li>Nenhum total disponível.</li>
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
+      </li>
+    {% empty %}
+      <li>Nenhuma renda cadastrada.</li>
+    {% endfor %}
+  </ul>
+</div>
 
 </div>
 
