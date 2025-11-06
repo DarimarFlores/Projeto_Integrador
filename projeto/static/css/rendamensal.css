@@ -197,3 +197,45 @@ h1, h2, h3 {
 .filtro-mes-select {
   max-width: 220px;  /* select não ocupa a tela toda */
 }
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.card-resumo {
+  text-align: left;
+}
+
+.card-resumo-valor {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 8px 0;
+}
+
+.card-resumo-label {
+  font-size: 0.9rem;
+  color: #ccc;
+  margin-bottom: 10px;
+}
+
+/* um toque de cor em cada tipo de card */
+.card-resumo-renda {
+  border-left: 4px solid #00b894;
+}
+
+.card-resumo-despesas {
+  border-left: 4px solid #ff7675;
+}
+
+.card-resumo-financiamentos {
+  border-left: 4px solid #0984e3;
+}
+
+/* botão menor dentro dos cards */
+.btn.btn-sm {
+  padding: 6px 10px;
+  font-size: 0.8rem;
+}

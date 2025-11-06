@@ -4,35 +4,125 @@
 {% block content %}
 <h1>Resumo do mês de {{ mes_atual_nome }}</h1>
 
-<div class="card">
-  <p>Aqui está um resumo das suas finanças no mês atual.</p>
+<!-- cards principais -->
+<div class="dashboard-grid">
+
+  <div class="card card-resumo card-resumo-renda">
+    <h2>Renda do mês</h2>
+    <p class="card-resumo-valor">R$ {{ total_renda|floatformat:2 }}</p>
+    <p class="card-resumo-label">Entradas de dinheiro</p>
+    <a href="{% url 'rendamensal:cadastro_renda' %}" class="btn btn-sm">Ver detalhes</a>
+  </div>
+
+  <div class="card card-resumo card-resumo-despesas">
+    <h2>Despesas do mês</h2>
+    <p class="card-resumo-valor">R$ {{ total_despesas|floatformat:2 }}</p>
+    <p class="card-resumo-label">Gastos gerais</p>
+    <a href="{% url 'despesas:lista_despesas' %}" class="btn btn-sm">Ver detalhes</a>
+  </div>
+
+  <div class="card card-resumo card-resumo-financiamentos">
+    <h2>Financiamentos do mês</h2>
+    <p class="card-resumo-valor">R$ {{ total_financiamentos|floatformat:2 }}</p>
+    <p class="card-resumo-label">Parcelas e dívidas</p>
+    <a href="{% url 'financiamentos:lista_financiamentos' %}" class="btn btn-sm">Ver detalhes</a>
+  </div>
+
 </div>
 
+<!-- saldo geral -->
 <div class="card">
-  <h2>Totais do mês</h2>
-  <ul>
-    <li><strong>Renda:</strong> R$ {{ total_renda|floatformat:2 }}</li>
-    <li><strong>Despesas:</strong> R$ {{ total_despesas|floatformat:2 }}</li>
-    <li><strong>Financiamentos:</strong> R$ {{ total_financiamentos|floatformat:2 }}</li>
-  </ul>
-
-  <h3>
-    Saldo do mês:
+  <h2>Saldo do mês (Renda – Despesas – Financiamentos)</h2>
+  <p>
     {% if saldo >= 0 %}
-      <span style="color: #00b894;">R$ {{ saldo|floatformat:2 }}</span>
+      <span style="color:#00b894; font-size:1.4rem; font-weight:bold;">
+        R$ {{ saldo|floatformat:2 }}
+      </span>
+      <span> • Situação positiva 🙂</span>
     {% else %}
-      <span style="color: #ff7675;">R$ {{ saldo|floatformat:2 }}</span>
+      <span style="color:#ff7675; font-size:1.4rem; font-weight:bold;">
+        R$ {{ saldo|floatformat:2 }}
+      </span>
+      <span> • Atenção: gastos maiores que a renda 😬</span>
     {% endif %}
-  </h3>
+  </p>
 </div>
 
+<!-- gráfico de saúde financeira -->
 <div class="card">
-  <h2>Relatórios detalhados</h2>
-  <p>Veja os detalhes de cada área:</p>
-  <ul>
-    <li><a href="{% url 'rendamensal:cadastro_renda' %}" class="btn">Ver Renda Mensal</a></li>
-    <li><a href="{% url 'despesas:lista_despesas' %}" class="btn">Ver Despesas</a></li>
-    <li><a href="{% url 'financiamentos:lista_financiamentos' %}" class="btn">Ver Financiamentos</a></li>
-  </ul>
+  <h2>Saúde financeira ao longo dos meses</h2>
+  <p class="card-resumo-label">
+    Compare a evolução de renda, despesas, financiamentos e saldo ao longo do ano.
+  </p>
+  <canvas id="graficoSaude" height="120"></canvas>
 </div>
+
+<!-- script do gráfico -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const labels = {{ labels_json|default:"[]"|safe }};
+  const dadosRenda = {{ renda_por_mes_json|default:"[]"|safe }};
+  const dadosDespesas = {{ despesas_por_mes_json|default:"[]"|safe }};
+  const dadosFinanciamentos = {{ financiamentos_por_mes_json|default:"[]"|safe }};
+  const dadosSaldo = {{ saldo_por_mes_json|default:"[]"|safe }};
+
+  const ctx = document.getElementById('graficoSaude').getContext('2d');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Renda',
+          data: dadosRenda,
+          borderColor: '#00b894',
+          backgroundColor: 'rgba(0,184,148,0.2)',
+          tension: 0.3
+        },
+        {
+          label: 'Despesas',
+          data: dadosDespesas,
+          borderColor: '#ff7675',
+          backgroundColor: 'rgba(255,118,117,0.2)',
+          tension: 0.3
+        },
+        {
+          label: 'Financiamentos',
+          data: dadosFinanciamentos,
+          borderColor: '#0984e3',
+          backgroundColor: 'rgba(9,132,227,0.2)',
+          tension: 0.3
+        },
+        {
+          label: 'Saldo',
+          data: dadosSaldo,
+          borderColor: '#fdcb6e',
+          backgroundColor: 'rgba(253,203,110,0.2)',
+          borderDash: [5, 5],
+          tension: 0.3
+        },
+      ]
+    },
+    options: {
+      plugins: {
+        legend: {
+          labels: {
+            color: '#ffffff'
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: '#ffffff' },
+          grid: { color: 'rgba(255,255,255,0.05)' }
+        },
+        y: {
+          ticks: { color: '#ffffff' },
+          grid: { color: 'rgba(255,255,255,0.05)' }
+        }
+      }
+    }
+  });
+</script>
 {% endblock %}

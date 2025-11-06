@@ -1,4 +1,5 @@
 from datetime import date
+import json
 
 from django.shortcuts import render
 from django.db.models import Sum
@@ -9,37 +10,63 @@ from projeto.financiamentos.models import Financiamento
 
 
 def inicio(request):
-    # mês atual em formato '01', '02', ...
     mes_atual = date.today().strftime('%m')
 
-    # nome do mês usando as choices da Renda
-    mes_nome = dict(Renda.MES_CHOICES).get(mes_atual, '')
+    meses_choices = Renda.MES_CHOICES
+    mes_nome = dict(meses_choices).get(mes_atual,'')
 
-    # totais por app
     total_renda = (
-        Renda.objects.filter(mes=mes_atual)
-        .aggregate(total=Sum('valor'))['total'] or 0
+        Renda.objects.filter(mes=mes_atual).aggregate(total=Sum('valor'))['total'] or 0
     )
 
-    total_despesas = (
-        Despesa.objects.filter(mes=mes_atual)
-        .aggregate(total=Sum('valor'))['total'] or 0
+    total_despesas =(
+        Despesa.objects.filter(mes=mes_atual).aggregate(total=Sum('valor'))['total'] or 0
     )
 
     total_financiamentos = (
-        Financiamento.objects.filter(mes=mes_atual)
-        .aggregate(total=Sum('valor_total'))['total'] or 0
+        Financiamento.objects.filter(mes=mes_atual).aggregate(total=Sum('valor'))['total'] or 0
     )
 
-    # saldo simples: renda - despesas - financiamentos
-    saldo = total_renda - total_despesas - total_financiamentos
+    saldo = total_renda - (total_despesas + total_financiamentos)
+
+    labels = []
+    renda_por_mes = []
+    despesas_por_mes = []
+    financiamentos_por_mes = []
+    saldo_por_mes = []
+
+    for codigo, nome in meses_choices:
+        labels.append(nome)
+
+        renda_mes = (
+        Renda.objects.filter(mes=codigo).aggregate(total=Sum('valor'))['total'] or 0
+        )
+
+        despesa_mes = (
+        Despesa.objects.filter(mes=codigo).aggregate(total=Sum('valor'))['total'] or 0
+        )
+
+        financ_mes = (
+        Financiamento.objects.filter(mes=codigo).aggregate(total=Sum('valor'))['total'] or 0
+        )
+
+        renda_por_mes.append(float(renda_mes))
+        despesas_por_mes.append(float(despesa_mes))
+        financiamentos_por_mes.append(float(financ_mes))
+        saldo_por_mes.append(float(renda_mes -(despesa_mes + financ_mes)))
 
     contexto = {
-        'mes_atual_codigo': mes_atual,
-        'mes_atual_nome': mes_nome,
+        'mes_atual_nome': mes_nom,
         'total_renda': total_renda,
         'total_despesas': total_despesas,
-        'total_financiamentos': total_financiamentos,
         'saldo': saldo,
+    
+
+        'labels_json': json.dumps(labels),
+        'renda_por_mes_json': json.dumps(renda_por_mes),
+        'despesas_por_mes_json': json.dumps(despesas_por_mes),
+        'financiamentos_por_mes': json.dumps(financiamentos_por_mes),
+        'saldo_por_mes_json': json.dumps(saldo_por_mes),
     }
+
     return render(request, 'inicio.html', contexto)
