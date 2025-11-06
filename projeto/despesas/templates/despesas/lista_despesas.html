@@ -15,49 +15,53 @@
   </div>
 
   <!-- Filtro por mês -->
-  <div class="card mb-3">
-    <div class="card-body">
-      <form method="get" class="row g-2 align-items-end">
-        <div class="col-sm-6 col-md-4">
-          <label for="mes" class="form-label">Filtrar por mês</label>
-          <select name="mes" id="mes" class="form-select form-select-sm">
-            <option value="">-- Todos os meses --</option>
-            {% for codigo, nome_mes in meses %}
-              <option value="{{ codigo }}" {% if codigo == mes %}selected{% endif %}>
-                {{ nome_mes }}
-              </option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="col-sm-3 col-md-2">
-          <button type="submit" class="btn btn-outline-primary btn-sm w-100">
-            Filtrar
-          </button>
-        </div>
-      </form>
-    </div>
+  <form method="get" class="row g-2 align-items-end">
+  <div class="col-sm-6 col-md-4">
+    <label for="mes" class="form-label">Filtrar por mês</label>
+    <select name="mes" id="mes" class="form-select form-select-sm" onchange="this.form.submit()">
+      <option value="">-- Todos os meses --</option>
+      {% for codigo, nome_mes in meses %}
+        <option value="{{ codigo }}" {% if codigo == mes %}selected{% endif %}>
+          {{ nome_mes }}
+        </option>
+      {% endfor %}
+    </select>
   </div>
+</form>
 
-  <!-- Total do mês -->
-  <div class="card mb-3">
-    <div class="card-body">
-      {% if mes %}
+  {% if mes %}
+    <!-- Total do mês -->
+    <div class="card mb-3">
+      <div class="card-body">
         <h2 class="h6 mb-0">
-          Total do mês selecionado:
+          Total despesas
+          {% for codigo, nome_mes in meses %}
+            {% if codigo == mes %}
+              <strong>{{ nome_mes }}</strong>:
+            {% endif %}
+          {% endfor %}
           <span class="fw-bold text-success">
             R$ {{ total_mes|floatformat:2 }}
           </span>
         </h2>
-      {% else %}
-        <h2 class="h6 mb-0">
-          Total de todas as despesas:
-          <span class="fw-bold text-success">
-            R$ {{ total_mes|floatformat:2 }}
-          </span>
-        </h2>
-      {% endif %}
+      </div>
     </div>
-  </div>
+  {% endif %}
+
+    {% if mes %}
+    <!-- Título quando um mês foi selecionado -->
+    <h2 class="h5 mt-4">
+      Despesas de
+      {% for codigo, nome_mes in meses %}
+        {% if codigo == mes %}
+          {{ nome_mes }}
+        {% endif %}
+      {% endfor %}
+    </h2>
+  {% else %}
+    <!-- Título quando está em "Todos os meses" -->
+    <h2 class="h5 mt-4">Histórico de todas as despesas</h2>
+  {% endif %}
 
   <!-- Tabela de despesas -->
   <div class="card">
@@ -74,7 +78,9 @@
               <th>Data de Vencimento</th>
               <th>Data de Pagamento</th>
               <th>Status</th>
-              <th style="width: 120px;">Ações</th>
+              {% if mes %}
+                <th style="width: 140px;">Ações</th>
+              {% endif %}
             </tr>
           </thead>
           <tbody>
@@ -94,18 +100,23 @@
                   <span class="badge bg-danger">Pendente</span>
                 {% endif %}
               </td>
-              <td class="tabela-acoes">
-                <a href="{% url 'despesas:editar_despesa' despesa.id %}" class="btn-acao">
-                Editar
-                </a>
-                <a href="{% url 'despesas:remover_despesa' despesa.id %}" class="btn-acao btn-acao-remover">
-                Remover
-                </a>
-              </td>
+
+              {% if mes %}
+                <td>
+                  <div class="tabela-acoes">
+                    <a href="{% url 'despesas:editar_despesa' despesa.id %}?mes={{ mes }}" class="btn-acao">
+                      Editar
+                    </a>
+                    <a href="{% url 'despesas:remover_despesa' despesa.id %}" class="btn-acao btn-acao-remover">
+                      Remover
+                    </a>
+                  </div>
+                </td>
+              {% endif %}
             </tr>
             {% empty %}
             <tr>
-              <td colspan="9" class="text-center">
+              <td colspan="{% if mes %}9{% else %}8{% endif %}" class="text-center">
                 Nenhuma despesa cadastrada.
               </td>
             </tr>

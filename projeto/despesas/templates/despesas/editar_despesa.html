@@ -16,9 +16,7 @@
           <button type="submit" class="btn btn-primary">
             Salvar alterações
           </button>
-          <a href="{% url 'despesas:lista_despesas' %}" class="btn btn-secondary">
-            Voltar
-          </a>
+          <a href="{% if mes %}/despesas/?mes={{ mes }}{% else %}{% url 'despesas:lista_despesas' %}{% endif %}" class="btn btn-secondary">Voltar</a>
         </div>
       </form>
     </div>

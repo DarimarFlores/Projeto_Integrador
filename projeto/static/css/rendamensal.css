@@ -115,11 +115,38 @@ h1, h2, h3 {
   }
 }
 
+/* Tabela de despesas ocupa toda a largura do card */
+.tabela-despesas {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #00b894;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #111;
+    table-layout: auto;
+}
+
+.tabela-despesas th,
+.tabela-despesas td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid #00b89420;
+}
+
+/* mais espaço pra coluna das ações */
+.tabela-despesas th:last-child,
+.tabela-despesas td:last-child {
+    width: 170px;   /* se ainda ficar apertado, sobe pra 170 */
+    text-align: center;
+}
+
+/* div que contém os botões */
 .tabela-acoes {
-  display: inline-flex;      
-  gap: 6px;                  
-  align-items: center;
-  white-space: nowrap;       
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
 }
 
 .tabela-acoes .btn-acao {
@@ -127,10 +154,9 @@ h1, h2, h3 {
     padding: 2px 10px;
     font-size: 0.8rem;
     border-radius: 999px;
-    border: 1px solid #00b894;     
+    border: 1px solid #00b894;
     background-color: transparent;
     text-decoration: none;
-    margin-right: 4px;
 }
 
 .tabela-acoes .btn-acao:hover {
@@ -146,37 +172,6 @@ h1, h2, h3 {
 .tabela-acoes .btn-acao-remover:hover {
     background-color: #ff4d4d;
     color: #000;
-}
-
-.tabela-despesas {
-  width: 95%;               
-  margin: 0 auto;           
-  border-collapse: collapse;
-  border: 1px solid #00b894;
-  border-radius: 10px;
-  overflow: hidden;
-  background-color: #111;
-}
-
-.tabela-despesas th,
-.tabela-despesas td {
-  padding: 10px 12px;       
-  text-align: left;
-  border-bottom: 1px solid #00b89420;
-}
-
-.tabela-despesas th {
-  background-color: #0d0d0d;
-  font-weight: 600;
-  color: #00b894;
-}
-
-.tabela-despesas tr:last-child td {
-  border-bottom: none;
-}
-
-.tabela-despesas tr:hover {
-  background-color: #0f0f0f;
 }
 
 .linha-renda {
@@ -238,4 +233,82 @@ h1, h2, h3 {
 .btn.btn-sm {
   padding: 6px 10px;
   font-size: 0.8rem;
+}
+
+/* ==========================
+   PAINEL INICIAL - CARDS
+   ========================== */
+
+/* Grid que organiza os 3 cards (renda, despesas, financiamentos) */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    width: 90%;
+    margin: 30px auto;
+}
+
+/* Card base do resumo */
+.card-resumo {
+    text-align: center !important;          /* força o centro em todo o conteúdo */
+    border-radius: 16px;
+    padding: 20px;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-resumo:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+}
+
+/* Título dentro do card (Renda do mês, Despesas do mês, etc.) */
+.card-resumo h2 {
+    text-align: center !important;          /* centraliza o texto do título */
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+/* Valor grandão (R$ 3.500,00) */
+.card-resumo-valor {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+/* Texto explicativo menor */
+.card-resumo-label {
+    font-size: 0.9rem;
+    color: #ccc;
+    margin-bottom: 15px;
+}
+
+/* Cores específicas para cada card */
+.card-resumo-renda {
+    background: linear-gradient(135deg, #0b3d2e, #046b57);
+}
+
+.card-resumo-despesas {
+    background: linear-gradient(135deg, #4a0b0b, #046b57);
+}
+
+.card-resumo-financiamentos {
+    background: linear-gradient(135deg, #0b1d4a, #046b57);
+}
+
+/* Botão menor dentro do card */
+.card-resumo .btn-sm {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border-radius: 6px;
+    padding: 6px 12px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+.card-resumo .btn-sm:hover {
+    background-color: rgba(255, 255, 255, 0.35);
 }
