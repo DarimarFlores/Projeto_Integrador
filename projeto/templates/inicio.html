@@ -2,27 +2,27 @@
 {% block title %}Início{% endblock %}
 
 {% block content %}
-<h1>Resumo do mês de {{ mes_atual_nome }}</h1>
+<h1 class="card-resumo">Resumo {{ mes_atual_nome }}</h1>
 
 <!-- cards principais -->
 <div class="dashboard-grid">
 
   <div class="card card-resumo card-resumo-renda">
-    <h2>Renda do mês</h2>
+    <h2>Renda</h2>
     <p class="card-resumo-valor">R$ {{ total_renda|floatformat:2 }}</p>
     <p class="card-resumo-label">Entradas de dinheiro</p>
     <a href="{% url 'rendamensal:cadastro_renda' %}" class="btn btn-sm">Ver detalhes</a>
   </div>
 
   <div class="card card-resumo card-resumo-despesas">
-    <h2>Despesas do mês</h2>
+    <h2>Despesas</h2>
     <p class="card-resumo-valor">R$ {{ total_despesas|floatformat:2 }}</p>
     <p class="card-resumo-label">Gastos gerais</p>
     <a href="{% url 'despesas:lista_despesas' %}" class="btn btn-sm">Ver detalhes</a>
   </div>
 
   <div class="card card-resumo card-resumo-financiamentos">
-    <h2>Financiamentos do mês</h2>
+    <h2>Financiamentos</h2>
     <p class="card-resumo-valor">R$ {{ total_financiamentos|floatformat:2 }}</p>
     <p class="card-resumo-label">Parcelas e dívidas</p>
     <a href="{% url 'financiamentos:lista_financiamentos' %}" class="btn btn-sm">Ver detalhes</a>

@@ -59,14 +59,10 @@
               <td>{{ f.taxa_juros }}%</td>
               <td>{{ f.data_inicio|date:"d/m/Y" }}</td>
               <td>{{ f.data_fim|date:"d/m/Y" }}</td>
-              <td>{% if f.pago %}✅ Pago{% else %}❌ Pendente{% endif %}</td>
+              <td>{% if f.pago %}<i class="bi bi-check-circle"></i>{% else %}<i class="bi bi-hourglass-split"></i>{% endif %}</td>
               <td class="tabela-acoes">
-                <a href="{% url 'financiamentos:editar_financiamento' f.id %}" class="btn-acao">Editar</a>
-                <a href="{% url 'financiamentos:remover_financiamento' f.id %}"
-                  class="btn-acao btn-acao-remover"
-                  onclick="return confirm('Tem certeza que deseja remover este financiamento?');">
-                  Remover
-                </a>
+                <a href="{% url 'financiamentos:editar_financiamento' f.id %}" class="btn-acao" title="Editar"><i class="bi bi-pencil-square"></i></a>
+                <a href="{% url 'financiamentos:remover_financiamento' f.id %}" class="btn-acao btn-acao-remover" title="Remover" onclick="return confirm('Tem certeza que deseja remover este financiamento?');"><i class="bi bi-trash"></i></a>
               </td>
             </tr>
           {% empty %}

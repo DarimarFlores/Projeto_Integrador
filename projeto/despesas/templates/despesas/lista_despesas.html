@@ -26,6 +26,13 @@
           </option>
         {% endfor %}
       </select>
+
+      <label for="status">Filtrar por status</label>
+        <select name="status" id="status" onchange="this.form.submit()">
+          <option value="" {% if not status %}selected{% endif %}>Todas</option>
+          <option value="pago" {% if status == 'pago' %}selected{% endif %}>Pagas</option>
+          <option value="pendente" {% if status == 'pendente' %}selected{% endif %}>Pendentes</option>
+        </select>
     </form>
   </div>
 
@@ -78,9 +85,9 @@
               <th>Data de Vencimento</th>
               <th>Data de Pagamento</th>
               <th>Status</th>
-              {% if mes %}
-                <th style="width: 140px;">Ações</th>
-              {% endif %}
+                {% if mostrar_botoes %}
+                  <th style="width: 200px;">Ações</th>
+                {% endif %}
             </tr>
           </thead>
           <tbody>
@@ -95,28 +102,24 @@
               <td>{{ despesa.data_pagamento }}</td>
               <td>
                 {% if despesa.pago %}
-                  <span class="badge bg-success">Pago</span>
+                  <span class="badge bg-success"><i class="bi bi-check-circle"></i></span>
                 {% else %}
-                  <span class="badge bg-danger">Pendente</span>
+                  <span class="badge bg-danger"><i class="bi bi-hourglass-split"></i></span>
                 {% endif %}
               </td>
 
-              {% if mes %}
+              {% if mostrar_botoes %}
                 <td>
                   <div class="tabela-acoes">
-                    <a href="{% url 'despesas:editar_despesa' despesa.id %}?mes={{ mes }}" class="btn-acao">
-                      Editar
-                    </a>
-                    <a href="{% url 'despesas:remover_despesa' despesa.id %}" class="btn-acao btn-acao-remover">
-                      Remover
-                    </a>
+                    <a href="{% url 'despesas:editar_despesa' despesa.id %}?mes={{ mes }}{% if status %}&status={{ status }}{% endif %}" class="btn-acao" title="Editar"><i class="bi bi-pencil-square"></i></a>
+                    <a href="{% url 'despesas:remover_despesa' despesa.id %}?mes={{ mes }}{% if status %}&status={{ status }}{% endif %}" class="btn-acao btn-acao-remover" title="Remover" onclick="return confirm('Tem certeza que deseja excluir?')"><i class="bi bi-trash"></i></a>
                   </div>
                 </td>
               {% endif %}
             </tr>
             {% empty %}
             <tr>
-              <td colspan="{% if mes %}9{% else %}8{% endif %}" class="text-center">
+              <td colspan="{% if mostrar_botoes %}9{% else %}8{% endif %}" class="text-center">
                 Nenhuma despesa cadastrada.
               </td>
             </tr>

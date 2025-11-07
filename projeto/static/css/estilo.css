@@ -363,4 +363,14 @@ h1, h2, h3 {
   outline: none;
 }
 
+.btn-acao i {
+  font-size: 1rem;
+  vertical-align: middle;
+}
 
+.tabela-acoes {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
