@@ -10,24 +10,24 @@
     <h1 class="h3 mb-0">Despesas</h1>
     <p>Bem-vindo à seção de despesas. Aqui você poderá cadastrar, editar e acompanhar suas despesas.</p>
     <a href="{% url 'despesas:nova_despesa' %}" class="btn btn-primary btn-sm">
-      + Nova Despesa
+      Nova Despesa
     </a>
   </div>
 
   <!-- Filtro por mês -->
-  <form method="get" class="row g-2 align-items-end">
-  <div class="col-sm-6 col-md-4">
-    <label for="mes" class="form-label">Filtrar por mês</label>
-    <select name="mes" id="mes" class="form-select form-select-sm" onchange="this.form.submit()">
-      <option value="">-- Todos os meses --</option>
-      {% for codigo, nome_mes in meses %}
-        <option value="{{ codigo }}" {% if codigo == mes %}selected{% endif %}>
-          {{ nome_mes }}
-        </option>
-      {% endfor %}
-    </select>
+  <div class="card filtro-mes-card">
+    <form method="get" class="filtro-mes-form">
+      <label for="mes">Selecione o mês</label>
+      <select name="mes" id="mes" onchange="this.form.submit()">
+        <option value="">-- Todos os meses --</option>
+        {% for codigo, nome_mes in meses %}
+          <option value="{{ codigo }}" {% if codigo == mes %}selected{% endif %}>
+            {{ nome_mes }}
+          </option>
+        {% endfor %}
+      </select>
+    </form>
   </div>
-</form>
 
   {% if mes %}
     <!-- Total do mês -->

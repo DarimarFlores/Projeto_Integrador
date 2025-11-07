@@ -7,64 +7,30 @@ from .models import Renda
 
 # Create your views here.
 def cadastroRenda(request):
-    mes_param = request.GET.get('mes')
+    mes_param = request.GET.get('mes')          # None, '', ou '01'...'12'
+    mes_corrente = date.today().strftime('%m')  # mês atual do sistema
 
-    mes_corrente = date.today().strftime('%m')
-
-    if mes_param is None:
-        mes_filtro = mes_corrente
-    elif mes_param == '':
-        mes_filtro = None
-
-    else:
-        mes_filtro = mes_param    
-    
-    if request.method == 'POST':
-        form = RendaForm(request.POST)
-        if form.is_valid():
-            renda = form.save()
-            return redirect(f'/rendamensal/?mes={renda.mes}')
-            
-
-            if redirect_mes:
-                return redirect(f'/rendamensal/?mes={redirect_mes}')
-            return redirect('/rendamensal/')
-                
-    else:
-        form = RendaForm()
-
-    if mes_filtro:
-        rendas = Renda.objects.filter(mes=mes_filtro).order_by('data_recebimento')
-        total_mes_atual = (
-            rendas.aggregate(total_mes=Sum('valor'))['total_mes'] or 0
-        )
+    if mes_param:
+        # Quando um mês foi escolhido no filtro
+        rendas = Renda.objects.filter(mes=mes_param).order_by('data_recebimento')
+        total_mes = rendas.aggregate(total=Sum('valor'))['total'] or 0
         mostrar_total_mes = True
-
     else:
+        # Quando o filtro está em "Todos os meses" (ou sem parâmetro)
         rendas = Renda.objects.all().order_by('mes', 'data_recebimento')
-        total_mes_atual = 0
+        total_mes = None
         mostrar_total_mes = False
-      
-    totais_por_mes = (
-        Renda.objects
-        .values('mes')
-        .annotate(total_mes=Sum('valor'))
-        .order_by('mes')
-    )
 
-    mostrar_botoes = bool(mes_filtro and mes_filtro == mes_corrente)
-
+    # Botões só aparecem quando está vendo o mês atual
+    mostrar_botoes = bool(mes_param and mes_param == mes_corrente)
 
     contexto = {
-        'form': form,
         'rendas': rendas,
-        'totais_por_mes': totais_por_mes,
-        'mes_atual': mes_param,
-        'mes_corrente': mes_corrente,
-        'meses': Renda.MES_CHOICES,  
-        'total_mes_atual': total_mes_atual,
-        'mostrar_botoes': mostrar_botoes,
+        'meses': Renda.MES_CHOICES,
+        'mes_atual': mes_param,           # valor selecionado no filtro
+        'total_mes_atual': total_mes,     # total do mês escolhido
         'mostrar_total_mes': mostrar_total_mes,
+        'mostrar_botoes': mostrar_botoes,
     }
 
     return render(request, 'rendamensal/cadastro_renda.html', contexto)

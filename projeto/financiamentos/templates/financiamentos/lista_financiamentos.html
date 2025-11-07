@@ -1,73 +1,82 @@
 {% extends "base.html" %}
 {% block title %}Financiamentos{% endblock %}
 {% block content %}
-<h1>Financiamentos</h1>
-<p>Bem-vindo à seção de financiamentos. Aqui você poderá cadastrar, editar e acompanhar seus financiamentos e dívidas.</p>
-<!-- Filtro por mês -->
-<div class="card">
-  <form method="GET" class="filtro-mes-form">
-    <label for="mes">Filtrar por mês:</label>
-    <select name="mes" id="mes" class="filtro-mes-select" onchange="this.form.submit()">
-      <option value="">Todos os meses</option>
-      {% for codigo, nome_mes in meses %}
-        <option value="{{ codigo }}" {% if mes_atual == codigo %}selected{% endif %}>
-          {{ nome_mes }}
-        </option>
-      {% endfor %}
-    </select>
-    <noscript><button type="submit" class="btn">Filtrar</button></noscript>
-  </form>
-</div>
+
+<div class="container mt-4">
+
 
 <!-- Botão de novo financiamento -->
 <div class="d-flex justify-content-between align-items-center mb-3">
-  <h2>Lista de Financiamentos</h2>
-  <a href="{% url 'financiamentos:novo_financiamento' %}?mes={{ mes_atual }}" class="btn">+ Novo Financiamento</a>
+  <h1 class="h3 mb-0">Financiamentos</h1>
+  <p>Bem-vindo à seção de financiamentos. Aqui você poderá cadastrar, editar e acompanhar seus financiamentos e dívidas.</p>
+  <a href="{% url 'financiamentos:novo_financiamento' %}?mes={{ mes_atual }}" class="btn"> Novo Financiamento</a>
+  <h2>Lista de Financiamentos</h2>  
 </div>
+
+<!-- Filtro por mês -->
+  <div class="card filtro-mes-card">
+    <form method="get" class="filtro-mes-form">
+      <label for="mes">Selecione o mês</label>
+      <select name="mes" id="mes" onchange="this.form.submit()">
+        <option value="">-- Todos os meses --</option>
+        {% for codigo, nome_mes in meses %}
+          <option value="{{ codigo }}" {% if codigo == mes %}selected{% endif %}>
+            {{ nome_mes }}
+          </option>
+        {% endfor %}
+      </select>
+    </form>
+  </div>
 
 <!-- Tabela -->
 <div class="card">
-  <table class="tabela-despesas">
-    <thead>
-      <tr>
-        <th>Credor</th>
-        <th>Tipo</th>
-        <th>Valor Total</th>
-        <th>Parcelas</th>
-        <th>Valor Parcela</th>
-        <th>Taxa (%)</th>
-        <th>Início</th>
-        <th>Fim</th>
-        <th>Status</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for f in financiamentos %}
-        <tr>
-          <td>{{ f.credor }}</td>
-          <td>{{ f.get_tipo_display }}</td>
-          <td>R$ {{ f.valor_total|floatformat:2 }}</td>
-          <td>{{ f.numero_parcelas }}</td>
-          <td>R$ {{ f.valor_parcela|floatformat:2 }}</td>
-          <td>{{ f.taxa_juros }}%</td>
-          <td>{{ f.data_inicio|date:"d/m/Y" }}</td>
-          <td>{{ f.data_fim|date:"d/m/Y" }}</td>
-          <td>{% if f.pago %}✅ Pago{% else %}❌ Pendente{% endif %}</td>
-          <td class="tabela-acoes">
-            <a href="{% url 'financiamentos:editar_financiamento' f.id %}" class="btn-acao">Editar</a>
-            <a href="{% url 'financiamentos:remover_financiamento' f.id %}"
-              class="btn-acao btn-acao-remover"
-              onclick="return confirm('Tem certeza que deseja remover este financiamento?');">
-              Remover
-            </a>
-          </td>
-        </tr>
-      {% empty %}
-        <tr><td colspan="10">Nenhum financiamento cadastrado para este mês.</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="tabela-financiamentos">
+        <thead class="table-light">
+          <tr>
+            <th>Credor</th>
+            <th>Tipo</th>
+            <th>Valor Total</th>
+            <th>Parcelas</th>
+            <th>Valor Parcela</th>
+            <th>Taxa (%)</th>
+            <th>Início</th>
+            <th>Fim</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+    
+        <tbody>
+          {% for f in financiamentos %}
+            <tr>
+              <td>{{ f.credor }}</td>
+              <td>{{ f.get_tipo_display }}</td>
+              <td>R$ {{ f.valor_total|floatformat:2 }}</td>
+              <td>{{ f.numero_parcelas }}</td>
+              <td>R$ {{ f.valor_parcela|floatformat:2 }}</td>
+              <td>{{ f.taxa_juros }}%</td>
+              <td>{{ f.data_inicio|date:"d/m/Y" }}</td>
+              <td>{{ f.data_fim|date:"d/m/Y" }}</td>
+              <td>{% if f.pago %}✅ Pago{% else %}❌ Pendente{% endif %}</td>
+              <td class="tabela-acoes">
+                <a href="{% url 'financiamentos:editar_financiamento' f.id %}" class="btn-acao">Editar</a>
+                <a href="{% url 'financiamentos:remover_financiamento' f.id %}"
+                  class="btn-acao btn-acao-remover"
+                  onclick="return confirm('Tem certeza que deseja remover este financiamento?');">
+                  Remover
+                </a>
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="10">Nenhum financiamento cadastrado para este mês.</td></tr>
+          {% endfor %}
+        </tbody>
+  
+      </table>
+    </div>
+  </div>
 </div>
 
 <!-- Totais -->
@@ -105,6 +114,7 @@
       {% endfor %}
     </ul>
   </div>
+</div>
 </div>
 
 {% endblock %}

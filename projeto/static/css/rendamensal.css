@@ -140,6 +140,31 @@ h1, h2, h3 {
     text-align: center;
 }
 
+/* Tabela de despesas ocupa toda a largura do card */
+.tabela-financiamentos {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #00b894;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #111;
+    table-layout: auto;
+}
+
+.tabela-financiamentos th,
+.tabela-financiamentos td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid #00b89420;
+}
+
+/* mais espaço pra coluna das ações */
+.tabela-financiamentos th:last-child,
+.tabela-financiamentos td:last-child {
+    width: 200px;   /* se ainda ficar apertado, sobe pra 170 */
+    text-align: center;
+}
+
 /* div que contém os botões */
 .tabela-acoes {
     display: inline-flex;
@@ -312,3 +337,30 @@ h1, h2, h3 {
 .card-resumo .btn-sm:hover {
     background-color: rgba(255, 255, 255, 0.35);
 }
+
+.filtro-mes-card {
+  margin-top: 10px;
+}
+
+.filtro-mes-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 260px;
+}
+
+.filtro-mes-form label {
+  font-size:0.9rem;
+  color:#cccccc;
+}
+
+.filtro-mes-form select {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #034943;
+  background-color: #000000;
+  color: #ffffff;
+  outline: none;
+}
+
+
