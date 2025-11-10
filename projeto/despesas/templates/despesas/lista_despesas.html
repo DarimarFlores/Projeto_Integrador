@@ -111,7 +111,7 @@
               {% if mostrar_botoes %}
                 <td>
                   <div class="tabela-acoes">
-                    <a href="{% url 'despesas:editar_despesa' despesa.id %}?mes={{ mes }}{% if status %}&status={{ status }}{% endif %}" class="btn-acao" title="Editar"><i class="bi bi-pencil-square"></i></a>
+                    <a href="{% url 'despesas:editar_despesa' despesa.id %}?mes={{ mes }}{% if status %}&status={{ status }}{% endif %}" class="btn-acao" title="Editar"><i class="fa-solid fa-pen-to-square"></i></a>
                     <a href="{% url 'despesas:remover_despesa' despesa.id %}?mes={{ mes }}{% if status %}&status={{ status }}{% endif %}" class="btn-acao btn-acao-remover" title="Remover" onclick="return confirm('Tem certeza que deseja excluir?')"><i class="bi bi-trash"></i></a>
                   </div>
                 </td>

@@ -1,116 +1,112 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block title %}Financiamentos{% endblock %}
-{% block content %}
 
+{% block content %}
 <div class="container mt-4">
 
-
-<!-- Botão de novo financiamento -->
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h1 class="h3 mb-0">Financiamentos</h1>
-  <p>Bem-vindo à seção de financiamentos. Aqui você poderá cadastrar, editar e acompanhar seus financiamentos e dívidas.</p>
-  <a href="{% url 'financiamentos:novo_financiamento' %}?mes={{ mes_atual }}" class="btn"> Novo Financiamento</a>
-  <h2>Lista de Financiamentos</h2>  
-</div>
-
-<!-- Filtro por mês -->
-  <div class="card filtro-mes-card">
-    <form method="get" class="filtro-mes-form">
-      <label for="mes">Selecione o mês</label>
-      <select name="mes" id="mes" onchange="this.form.submit()">
-        <option value="">-- Todos os meses --</option>
-        {% for codigo, nome_mes in meses %}
-          <option value="{{ codigo }}" {% if codigo == mes %}selected{% endif %}>
-            {{ nome_mes }}
-          </option>
-        {% endfor %}
-      </select>
-    </form>
+  <!-- Cabeçalho + botão -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Financiamentos</h1>
+    <p>Gerencie aqui seus financiamentos e parcelas mensais.</p>
+    <a href="{% url 'financiamentos:novo_financiamento' %}" class="btn btn-primary btn-sm">
+      + Novo Financiamento
+    </a>
   </div>
 
-<!-- Tabela -->
-<div class="card">
-  <div class="card-body">
-    <div class="table-responsive">
-      <table class="tabela-financiamentos">
-        <thead class="table-light">
-          <tr>
-            <th>Credor</th>
-            <th>Tipo</th>
-            <th>Valor Total</th>
-            <th>Parcelas</th>
-            <th>Valor Parcela</th>
-            <th>Taxa (%)</th>
-            <th>Início</th>
-            <th>Fim</th>
-            <th>Status</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-    
-        <tbody>
-          {% for f in financiamentos %}
+  <!-- Filtro por mês -->
+  <div class="card filtro-mes-card mb-3">
+    <div class="card-body">
+      <form method="get" class="row g-2 align-items-end">
+        
+        <div class="col-sm-4">
+          <label for="mes" class="form-label">Filtrar por mês</label>
+          <select name="mes" id="mes" class="form-select form-select-sm" onchange="this.form.submit()">
+            <option value="">-- Todos os meses --</option>
+            {% for codigo, nome_mes in meses %}
+              <option value="{{ codigo }}" {% if codigo == mes %}selected{% endif %}>
+                {{ nome_mes }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="status" class="form-label">Status</label>
+          <select name="status" id="status" class="form-select form-select-sm" onchange="this.form.submit()">
+            <option value="" {% if not status %}selected{% endif %}>Todos</option>
+            <option value="pago" {% if status == 'pago' %}selected{% endif %}>Pagos</option>
+            <option value="pendente" {% if status == 'pendente' %}selected{% endif %}>Pendentes</option>
+          </select>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Total do mês -->
+  {% if total_mes is not None %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h2 class="h6 mb-0">
+        Total das parcelas do mês:
+        <span class="fw-bold text-success">R$ {{ total_mes|floatformat:2 }}</span>
+      </h2>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Tabela de financiamentos -->
+  <div class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="tabela-despesas">
+          <thead>
+            <tr>
+              <th>Credor</th>
+              <th>Tipo</th>
+              <th>Mês</th>
+              <th>Valor Parcela</th>
+              <th>Data Início</th>
+              <th>Data Vencimento</th>
+              <th>Pago</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for f in financiamentos %}
             <tr>
               <td>{{ f.credor }}</td>
               <td>{{ f.get_tipo_display }}</td>
-              <td>R$ {{ f.valor_total|floatformat:2 }}</td>
-              <td>{{ f.numero_parcelas }}</td>
+              <td>{{ f.get_mes_display }}</td>
               <td>R$ {{ f.valor_parcela|floatformat:2 }}</td>
-              <td>{{ f.taxa_juros }}%</td>
               <td>{{ f.data_inicio|date:"d/m/Y" }}</td>
               <td>{{ f.data_fim|date:"d/m/Y" }}</td>
-              <td>{% if f.pago %}<i class="bi bi-check-circle"></i>{% else %}<i class="bi bi-hourglass-split"></i>{% endif %}</td>
-              <td class="tabela-acoes">
-                <a href="{% url 'financiamentos:editar_financiamento' f.id %}" class="btn-acao" title="Editar"><i class="bi bi-pencil-square"></i></a>
-                <a href="{% url 'financiamentos:remover_financiamento' f.id %}" class="btn-acao btn-acao-remover" title="Remover" onclick="return confirm('Tem certeza que deseja remover este financiamento?');"><i class="bi bi-trash"></i></a>
+
+              <td>
+                {% if f.pago %}
+                  <span class="badge bg-success"><i class="bi bi-check-circle"></i></span>
+                {% else %}
+                  <span class="badge bg-danger"><i class="bi bi-hourglass-split"></i></span>
+                {% endif %}
+              </td>
+
+              <td>
+                {% if mostrar_botoes %}
+                  <div class="tabela-acoes">
+                    <a href="{% url 'financiamentos:editar_financiamento' f.id %}" class="btn-acao" title="Editar"><i class="fa-solid fa-pen-to-square"></i></a>
+                    <a href="{% url 'financiamentos:remover_financiamento' f.id %}" class="btn-acao btn-acao-remover" title="Remover" onclick="return confirm('Tem certeza que deseja remover este financiamento?');"><i class="bi bi-trash"></i></a>
+                  </div>
+                {% endif %}
               </td>
             </tr>
-          {% empty %}
-            <tr><td colspan="10">Nenhum financiamento cadastrado para este mês.</td></tr>
-          {% endfor %}
-        </tbody>
-  
-      </table>
+            {% empty %}
+            <tr><td colspan="8" class="text-center">Nenhum financiamento cadastrado.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Totais -->
-<h3 class="h6">
-  {% if mes_atual %}
-    Total do mês:
-    {% for codigo, nome_mes in meses %}
-      {% if mes_atual == codigo %}
-        {{ nome_mes }}
-      {% endif %}
-    {% endfor %}
-  {% else %}
-    Total de todos os financiamentos:
-  {% endif %}
-  – <span class="fw-bold text-success">R$ {{ total_mes_atual|floatformat:2 }}</span>
-</h3>
-
-<h3 class="h6 mt-3">Totais por Mês</h3>
-<div class="card mb-3">
-  <div class="card-body">
-    <ul class="list-unstyled mb-0">
-      {% for item in totais_por_mes %}
-        <li>
-          <strong>
-            {% for codigo, nome_mes in meses %}
-              {% if item.mes == codigo %}
-                {{ nome_mes }}
-              {% endif %}
-            {% endfor %}
-          </strong>:
-          R$ {{ item.total_mes|floatformat:2 }}
-        </li>
-      {% empty %}
-        <li>Nenhum total disponível.</li>
-      {% endfor %}
-    </ul>
-  </div>
 </div>
-</div>
-
 {% endblock %}

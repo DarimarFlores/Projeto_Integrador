@@ -10,14 +10,24 @@ from .forms import DespesaForm
 def lista_despesas(request):
     mes_param = request.GET.get('mes')
     status_param = request.GET.get('status')
-    mes_corrente = date.today().strftime('%m')        # mes atual
+    mes_corrente = date.today().strftime('%m')  # mes atual
+    
+    # primeira vez que entrou na pagina, não veio ?mes= na URL
+    if mes_param is None:
+        # filtra pelo mês actual
+        mes_filtro = mes_corrente
+    elif mes_param == '':
+        # usuário escolheu todos os meses no filtro 
+        mes_filtro = None
+    else:
+        mes_filtro = mes_param       
 
     # começa com todas as despesas
     despesas_qs =Despesa.objects.all()
 
     #  filtro para o mes escolhido
-    if mes_param:
-        despesas_qs = despesas_qs.filter(mes=mes_param) 
+    if mes_filtro:
+        despesas_qs = despesas_qs.filter(mes=mes_filtro) 
     
     # filtro por status   
     if status_param == 'pago':
@@ -26,13 +36,13 @@ def lista_despesas(request):
         despesas_qs = despesas_qs.filter(pago=False)
 
     # colocando na orden
-    if mes_param:
+    if mes_filtro:
         despesas = despesas_qs.order_by('data_pagamento')
     else:
         despesas = despesas_qs.order_by('mes', 'data_pagamento')
     
     # total do mês
-    if mes_param:
+    if mes_filtro:
         total_mes = despesas_qs.aggregate(total=Sum('valor'))['total'] or 0
     else:
         total_mes = None
@@ -45,12 +55,14 @@ def lista_despesas(request):
     )
 
     # Botões só aparecem com mês atual
-    mostrar_botoes = bool(mes_param and mes_param == mes_corrente)
+    mostrar_botoes = bool(mes_filtro and mes_filtro == mes_corrente)
+
+    mes_para_template = mes_param if mes_param is not None else mes_corrente
 
     context = {
         'despesas': despesas,
         'meses': Despesa.MES_CHOICES,
-        'mes': mes_param,
+        'mes': mes_para_template,
         'status': status_param,       
         'total_mes': total_mes,      # valor do mês escolhido
         'totais_por_mes': totais_por_mes,

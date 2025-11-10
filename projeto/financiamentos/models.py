@@ -22,11 +22,8 @@ class Financiamento(models.Model):
         verbose_name='Mês'
     )
     credor = models.CharField(max_length=100, verbose_name='Credor')
-    tipo = models.CharField(max_length=10, choices=TIPO_CHOICES, default='OUTRO')
-    valor_total = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Valor Total')
-    numero_parcelas = models.IntegerField(verbose_name='Nº de Parcelas', null=True, blank=True)
-    valor_parcela = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Valor da Parcela')
-    taxa_juros = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Taxa de Juros (%)', null=True, blank=True)
+    tipo = models.CharField(max_length=10, choices=TIPO_CHOICES, default='OUTRO', verbose_name='Tipo')      
+    valor_parcela = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Valor da Parcela')    
     data_inicio = models.DateField(verbose_name='Data de Início', null=True, blank=True)
     data_fim = models.DateField(verbose_name='Data de Término', null=True, blank=True)
     pago = models.BooleanField(default=False, verbose_name='Pago')

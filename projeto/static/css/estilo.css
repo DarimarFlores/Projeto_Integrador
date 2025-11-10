@@ -374,3 +374,15 @@ h1, h2, h3 {
   justify-content: center;
   gap: 10px;
 }
+
+.status-icon {
+  font-size: 1.1rem;
+}
+
+.status-icon-pago {
+  color: #00b894;
+}
+
+.status-icon-pendente {
+  color: #ff7675;
+}

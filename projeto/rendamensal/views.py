@@ -1,6 +1,8 @@
 from datetime import date
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
+
 from .forms import RendaForm
 from .models import Renda
 
@@ -10,24 +12,46 @@ def cadastroRenda(request):
     mes_param = request.GET.get('mes')          # None, '', ou '01'...'12'
     mes_corrente = date.today().strftime('%m')  # mês atual do sistema
 
-    if mes_param:
-        # Quando um mês foi escolhido no filtro
-        rendas = Renda.objects.filter(mes=mes_param).order_by('data_recebimento')
-        total_mes = rendas.aggregate(total=Sum('valor'))['total'] or 0
-        mostrar_total_mes = True
+    # decidir que mês usar como filtro
+    if mes_param is None:
+        # filtra pelo mês atual
+        mes_filtro = mes_corrente
+    elif mes_param == '':
+        # usuário escolheu todos os meses
+        mes_filtro = None
     else:
-        # Quando o filtro está em "Todos os meses" (ou sem parâmetro)
-        rendas = Renda.objects.all().order_by('mes', 'data_recebimento')
-        total_mes = None
-        mostrar_total_mes = False
+        mes_filtro = mes_param
 
-    # Botões só aparecem quando está vendo o mês atual
-    mostrar_botoes = bool(mes_param and mes_param == mes_corrente)
+    rendas_qs = Renda.objects.all()
+
+    # filtro por mês
+    if mes_filtro:
+        rendas_qs = rendas_qs.filter(mes=mes_filtro)
+    
+    # ordenando
+    if mes_filtro:
+        rendas = rendas_qs.order_by('data_recebimento')
+    else:
+        rendas = rendas_qs.order_by('mes', 'data_recebimento')
+    
+    # total do mês
+    if mes_filtro:
+        total_mes = rendas_qs.aggregate(total=Sum('valor'))['total'] or 0
+        mostrar_total_mes= True
+    else:
+        total_mes = None
+        mostrar_total_mes = False 
+
+    # botões editar e remover só aparecem no mês atual 
+    mostrar_botoes = bool(mes_filtro and mes_filtro == mes_corrente)
+
+    mes_para_template = mes_param if mes_param is not None else mes_corrente
+       
 
     contexto = {
         'rendas': rendas,
         'meses': Renda.MES_CHOICES,
-        'mes_atual': mes_param,           # valor selecionado no filtro
+        'mes_atual': mes_para_template,           # valor selecionado no filtro
         'total_mes_atual': total_mes,     # total do mês escolhido
         'mostrar_total_mes': mostrar_total_mes,
         'mostrar_botoes': mostrar_botoes,

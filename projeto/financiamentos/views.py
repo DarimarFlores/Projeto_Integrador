@@ -1,32 +1,64 @@
 from datetime import date
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
+
 from .models import Financiamento
 from .forms import FinanciamentoForm
 
 def lista_financiamentos(request):    
     mes_param = request.GET.get('mes')
+    status_param = request.GET.get('status')
+    mes_corrente = date.today().strftime('%m')
+
+    # iniciar app com mês atual
     
-    if mes_param:
-        financiamentos = Financiamento.objects.filter(mes=mes_param).order_by('data_inicio')
+    if mes_param is None:
+        mes_filtro = mes_corrente
+    elif mes_param == '':
+        mes_filtro = None
     else:
-        financiamentos = Financiamento.objects.all().order_by('mes', 'data_inicio')
+        # usuário escolhe um mês específico
+        mes_filtro = mes_param
+    
+    financ_qs = Financiamento.objects.all()
 
-    total_mes_atual = financiamentos.aggregate(total_mes=Sum('valor_total'))['total_mes'] or 0
+    # filtro por mês
+    if mes_filtro:
+        financ_qs = financ_qs.filter(mes=mes_filtro)
+    
+    # filtro por status
+    if status_param == 'pago':
+        financ_qs = financ_qs.filter(pago=True)
+    elif status_param == 'pendente':
+        financ_qs = financ_qs.filter(pago=False)
+    
+    # ordenando
+    if mes_filtro:
+        financiamentos = financ_qs.order_by('data_inicio')
+    else:
+        financiamentos =financ_qs.order_by('mes', 'data_inicio')
 
-    totais_por_mes = (
-        Financiamento.objects
-        .values('mes')
-        .annotate(total_mes=Sum('valor_total'))
-        .order_by('mes')
-    )
+    # total do mês
+    if mes_filtro:
+        total_mes = financ_qs.aggregate(total=Sum('valor_parcela'))['total'] or 0
+    else:
+        total_mes = None
 
+    # botões só aparecem no mês atual
+    mostrar_botoes = bool(mes_filtro and mes_filtro == mes_corrente)
+    
+    # valor que o template usa para marcar o select
+    mes_para_template = mes_param if mes_param is not None else mes_corrente
+    
     contexto = {
         'financiamentos': financiamentos,
         'meses': Financiamento.MES_CHOICES,
-        'mes_atual': mes_param,           # pode ser None
-        'total_mes_atual': total_mes_atual,
-        'totais_por_mes': totais_por_mes,
+        'mes': mes_para_template,
+        'status': status_param,
+        'total_mes': total_mes,
+        'mostrar_botoes': mostrar_botoes,
+        'mes_atual': mes_corrente,
     }
     return render(request, 'financiamentos/lista_financiamentos.html', contexto)
 
