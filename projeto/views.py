@@ -1,7 +1,5 @@
 from datetime import date
 import json
-import math
-from decimal import Decimal
 
 from django.shortcuts import render
 from django.db.models import Sum
@@ -87,66 +85,71 @@ def inicio(request):
 def meta_poupanca(request):
     mes_atual = date.today().strftime('%m')
     meses_choices = Renda.MES_CHOICES
-    mes_atual_nome = dict(meses_choices).get(mes_atual,'')
+    mes_atual_nome = dict(meses_choices).get(mes_atual, '')
 
-    # cálculo da situação atual do mês
+    # --- Situação do mês atual ---
     total_renda_mes = (
         Renda.objects.filter(mes=mes_atual).aggregate(total=Sum('valor'))['total'] or 0
     )
-
     total_despesas_mes = (
         Despesa.objects.filter(mes=mes_atual).aggregate(total=Sum('valor'))['total'] or 0
     )
-
     total_financiamentos_mes = (
         Financiamento.objects.filter(mes=mes_atual).aggregate(total=Sum('valor_parcela'))['total'] or 0
     )
 
-    saldo_mes = total_renda_mes - (total_despesas_mes + total_financiamentos_mes)
+    # saldo_mes pode vir como Decimal; converto pra float pra contas simples
+    saldo_mes = float(total_renda_mes) - float(total_despesas_mes + total_financiamentos_mes)
 
-    # simulação
-    valor_meta_raw = request.GET.get('valor_meta')
-    prazo_raw = request.GET.get('prazo_meses')
+    # --- Lê os valores da simulação ---
+    valor_meta_raw = (request.GET.get('valor_meta') or '').strip()
+    prazo_raw = (request.GET.get('prazo_meses') or '').strip()
 
-    # valores da simulação iniciais
     valor_meta = None
     prazo_meses = None
     poupanca_mensal = None
     prazo_ideal = None
-    erro_validacao = False
-    houve_simulacao = False
 
-    if valor_meta_raw or prazo_raw:
-        houve_simulacao = True
+    houve_simulacao = bool(valor_meta_raw or prazo_raw)
+    mostrar_erro = False
+
+    if valor_meta_raw and prazo_raw:
         try:
-            valor_meta = float(valor_meta_raw.replace(',', '.'))
-            prazo_meses = int(prazo_raw)
+            vm = float(valor_meta_raw.replace(',', '.'))
+            pm = int(prazo_raw)
 
-            if valor_meta <= 0 or prazo_meses <= 0:
-                erro_validacao = True
-            else:
-                # quanto guardar por mês para atingir a meta no prazo desejado
-                poupanca_mensal = valor_meta / prazo_meses
+            if vm > 0 and pm > 0:
+                valor_meta = vm
+                prazo_meses = pm
+                poupanca_mensal = vm / pm
 
-                # se o saldo mensal for positivo, em quantos meses você atinge essa meta
+                # aqui uso saldo_mes (float) sem erro de tipo
                 if saldo_mes > 0:
-                    prazo_ideal = valor_meta / saldo_mes
+                    prazo_ideal = vm / saldo_mes
+            else:
+                mostrar_erro = True
 
-        except (ValueError, TypeError, AttributeError):
-            erro_validacao = True
-  
+        except (ValueError, TypeError):
+            mostrar_erro = True
+
+    elif houve_simulacao:
+        # clicou em calcular mas deixou algum campo vazio
+        mostrar_erro = True
+
     contexto = {
         'mes_atual_nome': mes_atual_nome,
         'total_renda_mes': total_renda_mes,
         'total_despesas_mes': total_despesas_mes,
         'total_financiamentos_mes': total_financiamentos_mes,
-        'saldo_mes': saldo_mes,
+        'saldo_mes': saldo_mes,  # já como float, mas pra exibir não tem problema
+
         'valor_meta': valor_meta,
         'prazo_meses': prazo_meses,
-        'poupanca_mensal': poupanca_mensal,        
+        'poupanca_mensal': poupanca_mensal,
         'prazo_ideal': prazo_ideal,
-        'erro_validacao': erro_validacao,
-        'houve_simulacao': houve_simulacao
+
+        'houve_simulacao': houve_simulacao,
+        'mostrar_erro': mostrar_erro,
     }
 
     return render(request, 'meta_poupanca.html', contexto)

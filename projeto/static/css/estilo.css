@@ -386,3 +386,54 @@ h1, h2, h3 {
 .status-icon-pendente {
   color: #ff7675;
 }
+
+/* -------- Meta de Poupança -------- */
+
+.meta-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.meta-situacao-lista {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 0.9rem;
+}
+
+.meta-card h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.meta-form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.meta-input-group {
+  flex: 1 1 180px;
+}
+
+.meta-input-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+.meta-input-group input {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #034943;
+  background-color: #111;
+  color: #fff;
+}
+
+.meta-card hr {
+  border: 0;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  margin: 12px 0;
+}

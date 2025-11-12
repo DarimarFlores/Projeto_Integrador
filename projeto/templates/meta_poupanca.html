@@ -4,86 +4,88 @@
 {% block content %}
 <h1>Meta de Poupança</h1>
 
-<div class="card mb-3">
-  <div class="card-body">
-    <p>Você está vendo a situação do mês de <strong>{{ mes_atual_nome }}</strong>.</p>
-    <ul>
-      <li><strong>Renda do mês:</strong> R$ {{ total_renda|floatformat:2 }}</li>
-      <li><strong>Despesas do mês:</strong> R$ {{ total_despesas|floatformat:2 }}</li>
-      <li><strong>Financiamentos do mês:</strong> R$ {{ total_financiamentos|floatformat:2 }}</li>
+<div class="meta-grid">
+
+  <!-- Situação atual do mês -->
+  <div class="card meta-card">
+    <h2>Situação do mês de {{ mes_atual_nome }}</h2>
+    <ul class="meta-situacao-lista">
+      <li>Renda do mês: R$ {{ total_renda_mes|floatformat:2 }}</li>
+      <li>Despesas do mês: R$ {{ total_despesas_mes|floatformat:2 }}</li>
+      <li>Financiamentos do mês: R$ {{ total_financiamentos_mes|floatformat:2 }}</li>
       <li>
-        <strong>Saldo do mês (renda - despesas - financiamentos):</strong>
-        <span style="color:#00b894;">R$ {{ saldo_mes|floatformat:2 }}</span>
+        Saldo do mês:
+        <strong style="color:#00b894;">
+          R$ {{ saldo_mes|floatformat:2 }}
+        </strong>
       </li>
     </ul>
   </div>
-</div>
 
-<div class="card mb-3">
-  <div class="card-body">
-    <h2 class="h5">Simular uma meta de poupança</h2>
-    <p>Informe o valor que deseja juntar e em quantos meses.</p>
-
+  <!-- Formulário da meta -->
+  <div class="card meta-card">
+    <h2>Simular uma meta de poupança</h2>
     <form method="get">
-      <div class="mb-2">
-        <label for="valor_meta" class="form-label">Valor da meta (R$)</label>
-        <input type="number" step="0.01" min="0" id="valor_meta" name="valor_meta"
-               class="form-control form-control-sm"
-               value="{{ valor_meta }}">
+      <div class="meta-form-row">
+        <div class="meta-input-group">
+          <label for="valor_meta">Valor da meta (R$)</label>
+          <input type="text" id="valor_meta" name="valor_meta"
+                 value="{{ valor_meta|default_if_none:'' }}">
+        </div>
+        <div class="meta-input-group">
+          <label for="prazo_meses">Prazo (em meses)</label>
+          <input type="number" id="prazo_meses" name="prazo_meses"
+                 min="1" value="{{ prazo_meses|default_if_none:'' }}">
+        </div>
       </div>
-
-      <div class="mb-2">
-        <label for="prazo_meses" class="form-label">Prazo (em meses)</label>
-        <input type="number" min="1" id="prazo_meses" name="prazo_meses"
-               class="form-control form-control-sm"
-               value="{{ prazo_meses }}">
-      </div>
-
-      <button type="submit" class="btn btn-primary btn-sm">Calcular</button>
+      <button type="submit" class="btn" style="margin-top:12px;">Calcular</button>
     </form>
   </div>
-</div>
+  
+  <!-- Resultado -->
+  <div class="card meta-card">
+    <h2>Resultado da simulação</h2>
 
-<div class="card mb-3">
-  <div class="card-body">
-    <h2 class="h5">Resultado da simulação</h2>
+    {# 1) ainda não simulou nada #}
+    {% if not houve_simulacao %}
+      <p class="card-resumo-label">
+        Preencha os campos acima e clique em <strong>Calcular</strong> para ver a simulação.
+      </p>
 
-    {% if houve_simulacao %}
-      {% if not erro_validacao and poupanca_mensal_ideal %}
+    {# 2) simulou e NÃO deu erro (temos valores válidos) #}
+    {% elif not mostrar_erro %}
+      <p>
+        Para juntar <strong>R$ {{ valor_meta|floatformat:2 }}</strong> em
+        <strong>{{ prazo_meses }}</strong> mês(es),
+        você precisa guardar aproximadamente
+        <strong>R$ {{ poupanca_mensal|floatformat:2 }}</strong> por mês.
+      </p>
+
+      {% if saldo_mes > 0 and saldo_mes >= poupanca_mensal %}
+        <hr>
         <p>
-          Para juntar <strong>R$ {{ valor_meta }}</strong> em
-          <strong>{{ prazo_meses }}</strong> mês(es),
-          você precisa guardar aproximadamente:
+          Com o seu saldo atual de <strong>R$ {{ saldo_mes|floatformat:2 }}</strong> por mês,
+          você levaria cerca de
+          <strong>{{ prazo_ideal|floatformat:1 }}</strong> mês(es)
+          para atingir essa meta, se guardar todo o saldo positivo.
         </p>
-        <p style="font-size:1.3rem; font-weight:bold; color:#fdcb6e;">
-          R$ {{ poupanca_mensal_ideal|floatformat:2 }} por mês
-        </p>
-
-        {% if saldo_mes > 0 and prazo_ideal_com_saldo %}
-          <hr>
-          <p>
-            Com o seu <strong>saldo atual de R$ {{ saldo_mes|floatformat:2 }}</strong> por mês,
-            você levaria aproximadamente:
-          </p>
-          <p style="font-size:1.1rem; font-weight:bold;">
-            {{ prazo_ideal_com_saldo|floatformat:0 }} mês(es)
-          </p>
-          <small>
-            Isso assume que você consegue guardar todo o saldo positivo do mês.
-          </small>
-        {% endif %}
-
       {% else %}
-        <p style="color:#ff7675;">
-          Não foi possível calcular a poupança mensal ideal.
-          Verifique se o valor da meta e o prazo em meses são números válidos
-          e maiores que zero.
+        <p>
+          No momento, o saldo do mês é zero ou negativo, então não é possível atingir essa meta
+          apenas com o que sobra do seu orçamento. Talvez valha ajustar despesas,
+          financiamentos ou aumentar a renda.
         </p>
       {% endif %}
+
+    {# 3) simulou mas tem problema nos valores #}
     {% else %}
-      <p>Preencha os campos acima e clique em <strong>Calcular</strong> para ver a simulação.</p>
+      <p class="card-resumo-label" style="color:#ff7675;">
+        Não foi possível calcular a poupança mensal.
+        Confira se você informou um <strong>valor de meta</strong> e um
+        <strong>prazo em meses</strong> maiores que zero.
+      </p>
     {% endif %}
   </div>
-</div>
 
+</div>
 {% endblock %}
