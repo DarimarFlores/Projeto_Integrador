@@ -13,21 +13,144 @@
     <p class="card-resumo-label">Entradas de dinheiro</p>
     <a href="{% url 'rendamensal:cadastro_renda' %}" class="btn btn-sm">Ver detalhes</a>
   </div>
+</div>
 
+<div class="dashboard-grid">
   <div class="card card-resumo card-resumo-despesas">
     <h2>Despesas</h2>
     <p class="card-resumo-valor">R$ {{ total_despesas|floatformat:2 }}</p>
     <p class="card-resumo-label">Gastos gerais</p>
     <a href="{% url 'despesas:lista_despesas' %}" class="btn btn-sm">Ver detalhes</a>
   </div>
+</div>
 
+<!-- 🔔 ALERTAS DE DESPESAS -->
+<div class="card" style="margin-top:16px;">
+  <h2>Alertas de Despesas</h2>
+  <p class="card-resumo-label">Despesas a vencer, vencendo hoje e vencidas.</p>
+
+  <div class="dashboard-grid" style="grid-template-columns: repeat(3, minmax(0,1fr)); gap:16px;">
+
+    <!-- VENCIDAS -->
+    <div class="card" style="border-color:#ff6b6b;">
+      <h3 style="color:#ff6b6b; text-align:center;">Vencidas</h3>
+      {% if despesas_vencidas %}
+        <ul class="list-unstyled">
+          {% for d in despesas_vencidas %}
+            <li>
+              🧾 {{ d.nome }} — R$ {{ d.valor|floatformat:2 }}
+              — {{ d.data_vencimento|date:"d/m/Y" }}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="card-resumo-label">Sem despesas vencidas 🎉</p>
+      {% endif %}
+    </div>
+
+    <!-- VENCEM HOJE -->
+    <div class="card" style="border-color:#fdcb6e;">
+      <h3 style="color:#fdcb6e; text-align:center;">Vencem hoje</h3>
+      {% if despesas_vence_hoje %}
+        <ul class="list-unstyled">
+          {% for d in despesas_vence_hoje %}
+            <li>
+              🧾 {{ d.nome }} — R$ {{ d.valor|floatformat:2 }} — hoje
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="card-resumo-label">Nenhuma despesa vencendo hoje.</p>
+      {% endif %}
+    </div>
+
+    <!-- PRÓXIMOS DIAS -->
+    <div class="card" style="border-color:#00b894;">
+      <h3 style="color:#00b894; text-align:center;">Próximos dias</h3>
+      {% if despesas_proximas %}
+        <ul class="list-unstyled">
+          {% for d in despesas_proximas %}
+            <li>
+              🧾 {{ d.nome }} — R$ {{ d.valor|floatformat:2 }}
+              — {{ d.data_vencimento|date:"d/m" }}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="card-resumo-label">Sem despesas próximas a vencer.</p>
+      {% endif %}
+    </div>
+
+  </div>
+</div>  
+
+<div class="dashboard-grid">
   <div class="card card-resumo card-resumo-financiamentos">
     <h2>Financiamentos</h2>
     <p class="card-resumo-valor">R$ {{ total_financiamentos|floatformat:2 }}</p>
     <p class="card-resumo-label">Parcelas e dívidas</p>
     <a href="{% url 'financiamentos:lista_financiamentos' %}" class="btn btn-sm">Ver detalhes</a>
   </div>
+</div>
+ 
+<!-- 🔔 ALERTAS DE FINANCIAMENTOS -->
+<div class="card" style="margin-top:16px;">
+  <h2>Alertas de Financiamentos</h2>
+  <p class="card-resumo-label">Parcelas de financiamentos a observar.</p>
 
+  <div class="dashboard-grid" style="grid-template-columns: repeat(3, minmax(0,1fr)); gap:16px;">
+
+    <!-- VENCIDOS -->
+    <div class="card" style="border-color:#ff6b6b;">
+      <h3 style="color:#ff6b6b; text-align:center;">Vencidos</h3>
+      {% if financ_vencidos %}
+        <ul class="list-unstyled">
+          {% for f in financ_vencidos %}
+            <li>
+              🏦 {{ f.credor }} — R$ {{ f.valor_parcela|floatformat:2 }}
+              — {{ f.data_vencimento|date:"d/m/Y" }}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="card-resumo-label">Sem financiamentos vencidos 🎉</p>
+      {% endif %}
+    </div>
+
+    <!-- VENCEM HOJE -->
+    <div class="card" style="border-color:#fdcb6e;">
+      <h3 style="color:#fdcb6e; text-align:center;">Vencem hoje</h3>
+      {% if financ_vence_hoje %}
+        <ul class="list-unstyled">
+          {% for f in financ_vence_hoje %}
+            <li>
+              🏦 {{ f.credor }} — R$ {{ f.valor_parcela|floatformat:2 }} — hoje
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="card-resumo-label">Nenhuma parcela vencendo hoje.</p>
+      {% endif %}
+    </div>
+
+    <!-- PRÓXIMOS DIAS -->
+    <div class="card" style="border-color:#00b894;">
+      <h3 style="color:#00b894; text-align:center;">Próximos dias</h3>
+      {% if financ_proximos %}
+        <ul class="list-unstyled">
+          {% for f in financ_proximos %}
+            <li>
+              🏦 {{ f.credor }} — R$ {{ f.valor_parcela|floatformat:2 }}
+              — {{ f.data_vencimento|date:"d/m" }}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="card-resumo-label">Sem parcelas próximas a vencer.</p>
+      {% endif %}
+    </div>
+
+  </div>
 </div>
 
 <!-- saldo geral -->

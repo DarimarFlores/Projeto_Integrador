@@ -11,8 +11,7 @@ def lista_financiamentos(request):
     status_param = request.GET.get('status')
     mes_corrente = date.today().strftime('%m')
 
-    # iniciar app com mês atual
-    
+    # iniciar app com mês atual    
     if mes_param is None:
         mes_filtro = mes_corrente
     elif mes_param == '':
@@ -35,15 +34,13 @@ def lista_financiamentos(request):
     
     # ordenando
     if mes_filtro:
-        financiamentos = financ_qs.order_by('data_inicio')
+        financiamentos = financ_qs.order_by('data_vencimento', 'credor')
     else:
-        financiamentos =financ_qs.order_by('mes', 'data_inicio')
+        financiamentos =financ_qs.order_by('mes', 'data_vencimento', 'credor')
 
     # total do mês
-    if mes_filtro:
-        total_mes = financ_qs.aggregate(total=Sum('valor_parcela'))['total'] or 0
-    else:
-        total_mes = None
+    total_mes = financ_qs.aggregate(total=Sum('valor_parcela'))['total'] or None
+  
 
     # botões só aparecem no mês atual
     mostrar_botoes = bool(mes_filtro and mes_filtro == mes_corrente)

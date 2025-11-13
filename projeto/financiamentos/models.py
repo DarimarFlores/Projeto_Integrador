@@ -16,16 +16,22 @@ class Financiamento(models.Model):
         ('OUTRO', 'Outro'),
     ]
 
-    mes = models.CharField(
-        max_length=60,
-        choices=MES_CHOICES,
-        verbose_name='Mês'
-    )
+    mes = models.CharField(max_length=60, choices=MES_CHOICES, verbose_name='Mês')
     credor = models.CharField(max_length=100, verbose_name='Credor')
     tipo = models.CharField(max_length=10, choices=TIPO_CHOICES, default='OUTRO', verbose_name='Tipo')      
-    valor_parcela = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Valor da Parcela')    
+    
+    # valores
+    valor_total = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='valor_total', null=True, blank=True)
+    numero_parcelas = models.IntegerField(verbose_name= 'N° Parcerlas', null= True, blank=True)
+    valor_parcela = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Valor da Parcela', null=True, blank=True)    
+    
+    taxa_juros = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Taxa de Juros (%)', null=True, blank=True)
+    
+    # datas
     data_inicio = models.DateField(verbose_name='Data de Início', null=True, blank=True)
     data_fim = models.DateField(verbose_name='Data de Término', null=True, blank=True)
+    data_vencimento= models.DateField(verbose_name='Vencimento da parcela', null=True, blank=True)
+    
     pago = models.BooleanField(default=False, verbose_name='Pago')
 
     def __str__(self):

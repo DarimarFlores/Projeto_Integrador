@@ -62,11 +62,15 @@
         <table class="tabela-despesas">
           <thead>
             <tr>
+              <th>Mês</th>
               <th>Credor</th>
               <th>Tipo</th>
-              <th>Mês</th>
+              <th>Valor Total</th>
+              <th>Número Parcelas</th>              
               <th>Valor Parcela</th>
+              <th>Taxa Juros</th>
               <th>Data Início</th>
+              <th>Data Fim</th>
               <th>Data Vencimento</th>
               <th>Pago</th>
               <th>Ações</th>
@@ -75,13 +79,12 @@
           <tbody>
             {% for f in financiamentos %}
             <tr>
-              <td>{{ f.credor }}</td>
-              <td>{{ f.get_tipo_display }}</td>
               <td>{{ f.get_mes_display }}</td>
+              <td>{{ f.credor }}</td>
+              <td>{{ f.get_tipo_display }}</td>                                        
               <td>R$ {{ f.valor_parcela|floatformat:2 }}</td>
-              <td>{{ f.data_inicio|date:"d/m/Y" }}</td>
-              <td>{{ f.data_fim|date:"d/m/Y" }}</td>
-
+              <td>{{ f.data_vencimento|date:"d/m/Y" }}</td>
+              
               <td>
                 {% if f.pago %}
                   <span class="badge bg-success"><i class="bi bi-check-circle"></i></span>

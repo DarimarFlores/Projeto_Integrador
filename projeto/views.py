@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 import json
 
 from django.shortcuts import render
@@ -65,7 +65,7 @@ def inicio(request):
         despesas_por_mes.append(float(despesa_mes))
         financiamentos_por_mes.append(float(financ_mes))
         saldo_por_mes.append(float(renda_mes - (despesa_mes + financ_mes)))
-
+    
     contexto = {
         'mes_atual_nome': mes_nome,
         'total_renda': total_renda,
@@ -81,6 +81,34 @@ def inicio(request):
     }
 
     return render(request, 'inicio.html', contexto)
+
+    # alertas para despesas e financiamentos
+def alertas_financiamentos(request):
+    hoje = date.today()
+    limite = hoje + timedelta(days=5)
+
+   
+    financ_vencidas = Financiamento.objects.filter(pago=False, data_vencimento__lt=hoje).order_by('data_vencimento')
+    financ_vence_hoje = Financiamento.objects.filter(pago=False, data_vencimento=hoje).order_by('credor')
+    financ_proximos = Financiamento.objects.filter(pago=False, data_vencimento__gt=hoje, data_vencimento__lte=limite).order_by('data_vencimento')
+
+    despesas_vencidas = Despesa.objects.filter(pago=False, data_vencimento__lt=hoje).order_by('data_vencimento')
+    despesas_vence_hoje = Despesa.objects.filter(pago=False, data_vencimento=hoje).order_by('credor')
+    despesas_proximas = Despesa.objects.filter(pago=False, data_vencimento__gt=hoje, data_vencimento__lte=limite).order_by('data_vencimento')
+    
+    contexto = {
+        'financ_vencidos': financ_vencidos,
+        'financ_vence_hoje': financ_vence_hoje,
+        'financ_proximos': financ_proximos,
+        'despesas_vencidas': despesas_vencidas,
+        'despesas_vence_hoje': despesas_vence_hoje,
+        'despesas_proximas': despesas_proximas,
+        'hoje': hoje,
+        'limite': limite,
+
+    }
+    return render(request, 'financiamentos/inicio.html', contexto)
+
 
 def meta_poupanca(request):
     mes_atual = date.today().strftime('%m')
