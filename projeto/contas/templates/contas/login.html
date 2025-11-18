@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login - Gerenciador</title>
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+    {# ajuste o caminho se seu CSS tiver outro nome #}
+  </head>
+  <body class="auth-page">
+    <div class="auth-card">
+      <!-- Lado esquerdo (banner) -->
+      <div class="auth-left">
+        <div class="auth-left-overlay">
+
+          <h2 class="auth-left-title">
+            Organize suas finanças de forma simples e inteligente
+          </h2>
+          <p class="auth-left-subtitle">
+            Controle suas rendas, despesas e financiamentos em um só lugar.
+            Acompanhe o mês atual, metas de poupança e alertas de vencimento.
+          </p>
+        </div>
+      </div>
+
+      <!-- Lado direito (formulário) -->
+      <div class="auth-right">
+        <div class="auth-logo">Gerenciador de Dívidas e Financiamentos</div>
+        <h1 class="auth-title">Acesse sua conta</h1>
+        <p class="auth-subtitle">
+          Entre com seu usuário e senha para ver seu painel financeiro.
+        </p>
+
+        <form method="post" class="auth-form">
+          {% csrf_token %} {{ form.non_field_errors }}
+
+          <div class="form-group">
+            <label for="id_username">E-mail ou usuário</label>
+            {{ form.username.errors }} {{ form.username }}
+          </div>
+
+          <div class="form-group">
+            <label for="id_password">Senha</label>
+            {{ form.password.errors }} {{ form.password }}
+          </div>
+
+          <div class="auth-row-small">
+            <label> <input type="checkbox" name="lembrar" /> Lembrar-me </label>
+            <a href="#">Esqueci minha senha</a> 
+          </div>
+
+          <button type="submit" class="auth-btn-main">ENTRAR</button>
+
+          <div class="auth-divider">
+            Não tem conta?
+            <a href="{% url 'contas:registrar' %}">Cadastre-se</a>
+          </div>
+
+        </form>
+
+        <div class="auth-footer">
+          © 2025 Gerenciador de Dívidas e Financiamentos – Todos os direitos
+          reservados.
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

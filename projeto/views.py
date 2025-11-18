@@ -8,6 +8,10 @@ from projeto.rendamensal.models import Renda
 from projeto.despesas.models import Despesa
 from projeto.financiamentos.models import Financiamento
 
+from django.contrib.auth.decorators import login_required
+
+@login_required
+
 
 def inicio(request):
     mes_atual = date.today().strftime('%m')

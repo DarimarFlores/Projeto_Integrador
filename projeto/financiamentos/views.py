@@ -5,6 +5,9 @@ from django.db.models import Sum
 
 from .models import Financiamento
 from .forms import FinanciamentoForm
+from django.contrib.auth.decorators import login_required
+
+@login_required
 
 def lista_financiamentos(request):    
     mes_param = request.GET.get('mes')

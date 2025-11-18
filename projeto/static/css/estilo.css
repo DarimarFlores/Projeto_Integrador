@@ -437,3 +437,234 @@ h1, h2, h3 {
   border-top: 1px solid rgba(255,255,255,0.1);
   margin: 12px 0;
 }
+
+/* === BODY DAS TELAS DE AUTENTICAÇÃO === */
+body.auth-page {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #0f172a;        
+  color: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+/* === CARD PRINCIPAL (LOGIN / CADASTRO) === */
+.auth-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  width: 100%;
+  max-width: 980px;
+  background: #111827;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+/* Lado esquerdo (banner) */
+.auth-left {
+  position: relative;
+  background-image: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #00b894 110%);
+  min-height: 320px;
+}
+
+.auth-left-overlay {
+  position: absolute;
+  inset: 0;
+  padding: 28px;
+  background: linear-gradient(
+    to top,
+    rgba(15, 23, 42, 0.85),
+    rgba(15, 23, 42, 0.55)
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.auth-left-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #e5e7eb;
+}
+
+.auth-left-subtitle {
+  font-size: 0.95rem;
+  color: #cbd5f5;
+  line-height: 1.5;
+}
+
+/* Lado direito (formulário) */
+.auth-right {
+  padding: 32px 32px 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-logo {
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #a5b4fc;
+  margin-bottom: 8px;
+}
+
+.auth-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.auth-subtitle {
+  font-size: 0.95rem;
+  color: #9ca3af;
+  margin-bottom: 20px;
+}
+
+/* === FORMULÁRIO === */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  color: #e5e7eb;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px 11px;
+  border-radius: 8px;
+  border: 1px solid #4b5563;
+  background: #020617;
+  color: #f9fafb;
+  font-size: 0.9rem;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #00b894;
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.6);
+}
+
+/* Erros do Django */
+ul.errorlist {
+  list-style: none;
+  color: #fecaca;
+  font-size: 0.8rem;
+  margin-bottom: 2px;
+}
+
+/* Linha pequena: lembrar-me + esqueci senha */
+.auth-row-small {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
+.auth-row-small a {
+  color: #93c5fd;
+  text-decoration: none;
+}
+
+.auth-row-small a:hover {
+  text-decoration: underline;
+}
+
+/* Botão principal */
+.auth-btn-main {
+  margin-top: 8px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #0b1120;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.08s ease;
+}
+
+.auth-btn-main:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 10px 24px rgba(34, 197, 94, 0.35);
+  transform: translateY(-1px);
+}
+
+.auth-btn-main:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Divisor com link para login/cadastro */
+.auth-divider {
+  margin: 14px 0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+.auth-divider a {
+  color: #a5b4fc;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-divider a:hover {
+  text-decoration: underline;
+}
+
+/* Botão "Entrar com Google" (só visual) */
+.auth-btn-google {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 999px;
+  border: 1px solid #4b5563;
+  background: transparent;
+  color: #e5e7eb;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.auth-btn-google:hover {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+/* Rodapé pequeno */
+.auth-footer {
+  margin-top: auto;
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-align: center;
+  padding-top: 12px;
+}
+
+/* Links genéricos dentro da auth-page */
+.auth-page a {
+  color: #93c5fd;
+}
+
+.auth-page a:hover {
+  text-decoration: underline;
+}
+
+

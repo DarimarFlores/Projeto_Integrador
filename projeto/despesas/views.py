@@ -5,6 +5,9 @@ from django.db.models import Sum
 
 from .models import Despesa
 from .forms import DespesaForm
+from django.contrib.auth.decorators import login_required
+
+@login_required
 
 # Create your views here.
 def lista_despesas(request):

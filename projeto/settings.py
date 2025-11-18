@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'projeto.rendamensal',
     'projeto.despesas',
     'projeto.financiamentos',
+    'projeto.contas',
 ]
 
 MIDDLEWARE = [
@@ -128,3 +129,7 @@ STATICFILES_DIRS = [BASE_DIR / 'projeto' / 'static']
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = 'contas:login'
+LOGIN_REDIRECT_URL = 'inicio'   # para onde vai depois de logar
+LOGOUT_REDIRECT_URL = 'contas:login'

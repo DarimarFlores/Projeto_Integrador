@@ -26,6 +26,14 @@
                 <a href="{% url 'despesas:lista_despesas' %}">Despesas</a>
                 <a href="{% url 'financiamentos:lista_financiamentos' %}">Financiamentos</a>
                 <a href="{% url 'meta_poupanca' %}">Meta de Poupança</a>
+                <div class="ms-auto">
+                {% if user.is_authenticated %}
+                    <span class="me-2">Olá, {{ user.username }}!</span>
+                    <a href="{% url 'contas:logout' %}" class="btn btn-sm btn-outline-light">Sair</a>
+                {% else %}
+                    <a href="{% url 'contas:login' %}" class="btn btn-sm btn-outline-light">Entrar</a>
+                {% endif %}
+                </div>
             </nav>
         </div>
     </header>

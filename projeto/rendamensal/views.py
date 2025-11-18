@@ -5,6 +5,9 @@ from django.db.models import Sum
 
 from .forms import RendaForm
 from .models import Renda
+from django.contrib.auth.decorators import login_required
+
+@login_required
 
 
 # Create your views here.

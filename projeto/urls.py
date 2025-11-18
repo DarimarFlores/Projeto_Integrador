@@ -9,4 +9,5 @@ urlpatterns = [
     path('rendamensal/', include('projeto.rendamensal.urls', namespace='rendamensal')),
     path('despesas/', include('projeto.despesas.urls', namespace='despesas')),
     path('financiamentos/', include('projeto.financiamentos.urls', namespace='financiamentos')),
+    path('contas/', include('projeto.contas.urls', namespace='contas')),
 ]
