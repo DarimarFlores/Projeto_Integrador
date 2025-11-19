@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView
-from django.contrib.auth
-from django.contrib.auth import logout
+from django.contrib.auth import logout as auth_logout
 from .forms import CadastroForm
 
 class LoginCustomView(LoginView):
@@ -20,8 +19,8 @@ def registrar(request):
     return render(request, 'contas/cadastro_usuario.html', {'form': form})
 
 def logout_view(request):
-    logout(request)  
-    return redirect('login')
+    auth_logout(request)  
+    return redirect('contas:login')
     
    
 

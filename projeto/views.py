@@ -185,3 +185,49 @@ def meta_poupanca(request):
     }
 
     return render(request, 'meta_poupanca.html', contexto)
+
+def relatorio_mensal(request):
+    mes_param = request.GET.get('mes')
+    mes_atual = date.today().strftime('%m')
+
+    if mes_param and mes_param != '':
+        mes_filtro = mes_param
+    else:
+        mes_filtro = mes_atual
+   
+    meses_choices = Renda.MES_CHOICES
+    mes_nome = dict(meses_choices).get(mes_filtro, '')
+
+    total_renda_mes = (
+        Renda.objects.filter(mes=mes_filtro).aggregate(total=Sum('valor'))['total'] or 0
+    )
+
+    total_despesas_mes = (
+        Despesa.objects.filter(mes=mes_filtro).aggregate(total=Sum('valor'))['total'] or 0
+    )
+
+    total_financiamentos_mes = (
+        Financiamento.objects.filter(mes=mes_filtro).aggregate(total=Sum('valor_parcela'))['total'] or 0
+    )
+
+    saldo_mes = total_renda_mes - (total_despesas_mes + total_financiamentos_mes)
+
+    rendas = Renda.objects.filter(mes=mes_filtro).order_by('data_recebimento')
+    despesas = Despesa.objects.filter(mes=mes_filtro).order_by('data_vencimento')
+    financiamentos = Financiamento.objects.filter(mes=mes_filtro).order_by('data_vencimento')
+
+    contexto = {
+        'meses': meses_choices,
+        'mes_filtro': mes_filtro,
+        'mes_nome': mes_nome,
+        'total_renda_mes': total_renda_mes,
+        'total_despesas_mes': total_despesas_mes,
+        'total_financiamentos_mes': total_financiamentos_mes,
+        'saldo_mes': saldo_mes,
+        'rendas': rendas,
+        'despesas': despesas,
+        'financiamentos': financiamentos,
+    }
+
+    return render(request, 'relatorios/relatorio_mensal.html', contexto)
+

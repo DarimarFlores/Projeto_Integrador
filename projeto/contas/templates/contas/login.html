@@ -4,7 +4,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>Login - Gerenciador</title>
-    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}" />
     {# ajuste o caminho se seu CSS tiver outro nome #}
   </head>
   <body class="auth-page">
@@ -12,7 +12,6 @@
       <!-- Lado esquerdo (banner) -->
       <div class="auth-left">
         <div class="auth-left-overlay">
-
           <h2 class="auth-left-title">
             Organize suas finanças de forma simples e inteligente
           </h2>
@@ -41,12 +40,21 @@
 
           <div class="form-group">
             <label for="id_password">Senha</label>
-            {{ form.password.errors }} {{ form.password }}
+            <div class="password-wrapper">
+              {{ form.password.errors }} {{ form.password }}
+              <button
+                type="button"
+                class="toggle-password"
+                data-target="id_password"
+              >
+                👁
+              </button>
+            </div>
           </div>
 
           <div class="auth-row-small">
             <label> <input type="checkbox" name="lembrar" /> Lembrar-me </label>
-            <a href="#">Esqueci minha senha</a> 
+            <a href="#">Esqueci minha senha</a>
           </div>
 
           <button type="submit" class="auth-btn-main">ENTRAR</button>
@@ -55,7 +63,6 @@
             Não tem conta?
             <a href="{% url 'contas:registrar' %}">Cadastre-se</a>
           </div>
-
         </form>
 
         <div class="auth-footer">
@@ -64,5 +71,24 @@
         </div>
       </div>
     </div>
+
+    <script>
+      document.querySelectorAll(".toggle-password").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          const targetId = this.getAttribute("data-target");
+          const input = document.getElementById(targetId);
+
+          if (!input) return;
+
+          if (input.type === "password") {
+            input.type = "text";
+            this.textContent = "🙈";
+          } else {
+            input.type = "password";
+            this.textContent = "👁";
+          }
+        });
+      });
+    </script>
   </body>
 </html>

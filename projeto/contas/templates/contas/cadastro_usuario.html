@@ -4,11 +4,10 @@
   <head>
     <meta charset="UTF-8" />
     <title>Cadastro - Gerenciador</title>
-    <link rel="stylesheet" href="{% static 'css/estilo.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}" />
   </head>
   <body class="auth-page">
-    <div class="auth-card">    
-
+    <div class="auth-card">
       <div class="auth-right">
         <div class="auth-logo">Gerenciador de Dívidas e Financiamentos</div>
         <h1 class="auth-title">Crie sua conta</h1>
@@ -35,14 +34,38 @@
             <label for="{{ form.password1.id_for_label }}"
               >{{ form.password1.label }}</label
             >
-            {{ form.password1.errors }} {{ form.password1 }}
+            {{ form.password1.errors }}
+            <div class="password-wrapper">
+              {{ form.password1 }}
+              <button
+                type="button"
+                class="toggle-password"
+                data-target="id_password1"
+              >
+                👁
+              </button>
+            </div>
+            <p class="password-hint">
+              A senha deve ter pelo menos 8 caracteres, com: letra maiúscula,
+              letra minúscula, número e caractere especial.
+            </p>
           </div>
 
           <div class="form-group">
             <label for="{{ form.password2.id_for_label }}"
               >{{ form.password2.label }}</label
             >
-            {{ form.password2.errors }} {{ form.password2 }}
+            {{ form.password2.errors }}
+            <div>
+              {{ form.password2 }}
+              <button
+                type="button"
+                class="toggle-password"
+                data-target="id_password2"
+              >
+                👁
+              </button>
+            </div>
           </div>
 
           <button type="submit" class="auth-btn-main">Cadastrar</button>
@@ -59,5 +82,25 @@
         </div>
       </div>
     </div>
+
+    <script>
+      // pega todos os botões de mostrar/ocultar senha
+      document.querySelectorAll(".toggle-password").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          const targetId = this.getAttribute("data-target");
+          const input = document.getElementById(targetId);
+
+          if (!input) return;
+
+          if (input.type === "password") {
+            input.type = "text";
+            this.textContent = "🙈";
+          } else {
+            input.type = "password";
+            this.textContent = "👁";
+          }
+        });
+      });
+    </script>
   </body>
 </html>

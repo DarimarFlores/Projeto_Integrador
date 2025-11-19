@@ -1,12 +1,15 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Gerenciador{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -14,39 +17,40 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-
-</head>
-<body class="app">
+  </head>
+  <body class="app">
     <header class="app-header">
-        <div class="container">
-            <strong>Gerenciador de Divídas e Financiamentos</strong>
-            <nav class="nav">
-                <a href="/">Início</a>
-                <a href="{% url 'rendamensal:cadastro_renda' %}">Renda Mensal</a>
-                <a href="{% url 'despesas:lista_despesas' %}">Despesas</a>
-                <a href="{% url 'financiamentos:lista_financiamentos' %}">Financiamentos</a>
-                <a href="{% url 'meta_poupanca' %}">Meta de Poupança</a>
-                <div class="ms-auto">
-                {% if user.is_authenticated %}
-                    <span class="me-2">Olá, {{ user.username }}!</span>
-                    <a href="{% url 'contas:logout' %}" class="btn btn-sm btn-outline-light">Sair</a>
-                {% else %}
-                    <a href="{% url 'contas:login' %}" class="btn btn-sm btn-outline-light">Entrar</a>
-                {% endif %}
-                </div>
-            </nav>
-        </div>
+      <div class="container">
+        <strong>Gerenciador de Divídas e Financiamentos</strong>
+
+        <nav class="nav">
+
+  <div class="nav-left">
+    <a href="/" class="menu-btn">Início</a>
+    <a href="{% url 'rendamensal:cadastro_renda' %}" class="menu-btn">Renda Mensal</a>
+    <a href="{% url 'despesas:lista_despesas' %}" class="menu-btn">Despesas</a>
+    <a href="{% url 'financiamentos:lista_financiamentos' %}" class="menu-btn">Financiamentos</a>
+    <a href="{% url 'meta_poupanca' %}" class="menu-btn">Meta de Poupança</a>
+    <a href="{% url 'relatorio_mensal' %}" class="menu-btn btn-small">Relatório mensal</a>
+  </div>
+
+  <div class="nav-right">
+    {% if user.is_authenticated %}
+      <span class="user-name">Olá, {{ user.username }}!</span>
+      <a href="{% url 'contas:logout' %}" class="btn btn-sm btn-outline-light">Sair</a>
+    {% endif %}
+  </div>
+
+</nav>
+      </div>
     </header>
 
     <main class="app-main">
-        <div class="container">
-            {% block content %}{% endblock %}
-        </div>
+      <div class="container">{% block content %}{% endblock %}</div>
     </main>
 
     <footer class="footer">
-    <p>© 2025 - Todos os direitos reservados</p>
+      <p>© 2025 - Todos os direitos reservados</p>
     </footer>
-    
-</body>
+  </body>
 </html>

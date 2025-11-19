@@ -667,4 +667,99 @@ ul.errorlist {
   text-decoration: underline;
 }
 
+/* ===== SENHA COM "OLHO" ===== */
 
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  padding-right: 40px; /* espaço pro botão do olho */
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #9ca3af;
+}
+
+.toggle-password:hover {
+  color: #e5e7eb;
+}
+
+.password-hint {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-left a {
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid #00b894;
+    text-decoration: none;
+    color: #fff;
+}
+
+.nav-right {
+    margin-left: auto;  /* empurra para a direita */
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-name {
+    font-weight: 600;
+}
+
+/* botões do menu (estilo pílula) */
+.menu-btn {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #023b37;
+  border: 1px solid #00b894;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+.menu-btn:hover {
+  background: #00b894;
+  color: #000;
+  transform: translateY(-2px);
+}
+
+/* texto do usuário */
+.user-name {
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* botão Sair / Entrar */
+.btn-sair {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #00b894;
+  color: #000;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.btn-sair:hover {
+  background: #04e0a7;
+}
