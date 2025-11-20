@@ -12,9 +12,19 @@
       <!-- Lado esquerdo (banner) -->
       <div class="auth-left">
         <div class="auth-left-overlay">
+          <!-- CAIXA DA IMAGEM DO CASAL -->
+          <div class="auth-image-box">
+            <img
+              src="{% static 'imagem/casal.png' %}"
+              alt="Casal planejando finanças"
+            />
+          </div>
+
+          <!-- TÍTULO E TEXTO -->
           <h2 class="auth-left-title">
             Organize suas finanças de forma simples e inteligente
           </h2>
+
           <p class="auth-left-subtitle">
             Controle suas rendas, despesas e financiamentos em um só lugar.
             Acompanhe o mês atual, metas de poupança e alertas de vencimento.
@@ -54,7 +64,7 @@
 
           <div class="auth-row-small">
             <label> <input type="checkbox" name="lembrar" /> Lembrar-me </label>
-            <a href="#">Esqueci minha senha</a>
+            <a href="{% url 'contas:esqueci_senha' %}">Esqueci minha senha</a>
           </div>
 
           <button type="submit" class="auth-btn-main">ENTRAR</button>

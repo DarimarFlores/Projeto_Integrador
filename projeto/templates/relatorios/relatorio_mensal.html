@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Relatório Mensal{% endblock %}
+{% load l10n %}
 
 {% block content %}
 <h1>Relatório mensal – {{ mes_nome }}</h1>
@@ -35,7 +36,7 @@
           <tr>
             <td>{{ r.get_tipo_display|default:r.tipo }}</td>
             <td>{{ r.data_recebimento|date:"d/m/Y" }}</td>
-            <td>R$ {{ r.valor|floatformat:2 }}</td>
+            <td>R$ {{ r.valor|floatformat:2|localize }}</td>
           </tr>
         {% empty %}
           <tr><td colspan="3">Nenhuma renda cadastrada neste mês.</td></tr>
@@ -49,7 +50,7 @@
   
     <div class="resumo-mensal-lista">
       <span class="resumo-label"> Total Rendas:   </span>
-      <span class="resumo-valor renda">R$ {{ total_renda_mes|floatformat:2 }}</span>
+      <span class="resumo-valor renda">R$ {{ total_renda_mes|floatformat:2|localize}}</span>
     </div>
 </div>
 
@@ -73,7 +74,7 @@
             <td>{{ d.nome }}</td>
             <td>{{ d.get_tipo_despesa_display|default:d.tipo }}</td>
             <td>{{ d.data_vencimento|date:"d/m/Y" }}</td>
-            <td>R$ {{ d.valor|floatformat:2 }}</td>
+            <td>R$ {{ d.valor|floatformat:2|localize }}</td>
             <td>
               {% if d.pago %}
                 <span class="badge bg-success"><i class="bi bi-check-circle"></i></span>
@@ -93,7 +94,7 @@
 <div class="card resumo-mensal-card">
   <div class="resumo-mensal-lista">
     <span class="resumo-label">Total Despesas:   </span>
-    <span class="resumo-valor despesas">R$ {{ total_despesas_mes|floatformat:2 }}</span>
+    <span class="resumo-valor despesas">R$ {{ total_despesas_mes|floatformat:2|localize }}</span>
   </div>
 </div>
 
@@ -119,7 +120,7 @@
             <td>{{ f.get_tipo_display }}</td>
             <td>{{ f.data_inicio|date:"d/m/Y" }}</td>
             <td>{{ f.data_fim|date:"d/m/Y" }}</td>
-            <td>R$ {{ f.valor_parcela|floatformat:2 }}</td>
+            <td>R$ {{ f.valor_parcela|floatformat:2|localize }}</td>
             <td>
               {% if f.pago %}
                 <span class="badge bg-success"><i class="bi bi-check-circle"></i></span>
@@ -139,13 +140,12 @@
 <div class="card resumo-mensal-card">
   <div class="resumo-mensal-lista">
     <span class="resumo-label">Total Financiamentos:</span>
-    <span class="resumo-valor financiamentos">R$ {{ total_financiamentos_mes|floatformat:2 }}</span>
+    <span class="resumo-valor financiamentos">R$ {{ total_financiamentos_mes|floatformat:2|localize}}</span>
   </div>
 </div>
  
 <div class="resumo-saldo">
-  <h2>Saldo total do mês: R$ {{ saldo_mes|floatformat:2 }}</h2>   
-</div>
+  <h2>Saldo total do mês: R$ {{ saldo_mes|floatformat:2|localize}}</h2>
 
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
     <button type="button" class="btn" onclick="window.print()">Imprimir / salvar em PDF</button>

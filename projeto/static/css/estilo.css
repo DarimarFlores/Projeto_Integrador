@@ -628,26 +628,6 @@ ul.errorlist {
   text-decoration: underline;
 }
 
-/* Botão "Entrar com Google" (só visual) */
-.auth-btn-google {
-  width: 100%;
-  padding: 9px 12px;
-  border-radius: 999px;
-  border: 1px solid #4b5563;
-  background: transparent;
-  color: #e5e7eb;
-  font-size: 0.9rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 4px;
-}
-
-.auth-btn-google:hover {
-  background: rgba(15, 23, 42, 0.9);
-}
 
 /* Rodapé pequeno */
 .auth-footer {
@@ -762,4 +742,35 @@ ul.errorlist {
 
 .btn-sair:hover {
   background: #04e0a7;
+}
+
+/* CAIXA DA FOTO DO CASAL */
+.auth-image-box {
+  width: 100%;
+  max-width: 500px;    /* largura máxima da foto */
+  height: 350px;       /* altura da faixa da foto */
+  margin: 0 auto 16px; /* centraliza e dá espaço embaixo */
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+/* IMAGEM DENTRO DA CAIXA */
+.auth-image-box img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* CARD ESPECIAL PARA A TELA DE CADASTRO (APENAS 1 COLUNA) */
+.auth-card.auth-card-single {
+  grid-template-columns: minmax(0, 1fr); /* só uma coluna */
+  max-width: 520px;                      /* card mais estreito */
+}
+
+/* opcional: ajustar um pouco o padding nessa versão */
+.auth-card.auth-card-single .auth-right {
+  padding: 32px 40px 28px;
 }

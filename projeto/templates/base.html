@@ -24,24 +24,38 @@
         <strong>Gerenciador de Divídas e Financiamentos</strong>
 
         <nav class="nav">
+          <div class="nav-left">
+            <a href="/" class="menu-btn">Início</a>
+            <a href="{% url 'rendamensal:cadastro_renda' %}" class="menu-btn"
+              >Renda Mensal</a
+            >
+            <a href="{% url 'despesas:lista_despesas' %}" class="menu-btn"
+              >Despesas</a
+            >
+            <a
+              href="{% url 'financiamentos:lista_financiamentos' %}"
+              class="menu-btn"
+              >Financiamentos</a
+            >
+            <a href="{% url 'meta_poupanca' %}" class="menu-btn"
+              >Meta de Poupança</a
+            >
+            <a href="{% url 'relatorio_mensal' %}" class="menu-btn btn-small"
+              >Relatório mensal</a
+            >
+          </div>
 
-  <div class="nav-left">
-    <a href="/" class="menu-btn">Início</a>
-    <a href="{% url 'rendamensal:cadastro_renda' %}" class="menu-btn">Renda Mensal</a>
-    <a href="{% url 'despesas:lista_despesas' %}" class="menu-btn">Despesas</a>
-    <a href="{% url 'financiamentos:lista_financiamentos' %}" class="menu-btn">Financiamentos</a>
-    <a href="{% url 'meta_poupanca' %}" class="menu-btn">Meta de Poupança</a>
-    <a href="{% url 'relatorio_mensal' %}" class="menu-btn btn-small">Relatório mensal</a>
-  </div>
-
-  <div class="nav-right">
-    {% if user.is_authenticated %}
-      <span class="user-name">Olá, {{ user.username }}!</span>
-      <a href="{% url 'contas:logout' %}" class="btn btn-sm btn-outline-light">Sair</a>
-    {% endif %}
-  </div>
-
-</nav>
+          <div class="nav-right">
+            {% if user.is_authenticated %}
+            <span class="user-name">Olá, {{ user.username }}!</span>
+            <a
+              href="{% url 'contas:logout' %}"
+              class="btn btn-sm btn-outline-light"
+              >Sair</a
+            >
+            {% endif %}
+          </div>
+        </nav>
       </div>
     </header>
 

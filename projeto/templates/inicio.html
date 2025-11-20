@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Início{% endblock %}
+{% load l10n %}
 
 {% block content %}
 <h1 class="card-resumo">Resumo {{ mes_atual_nome }}</h1>
@@ -9,7 +10,7 @@
 
   <div class="card card-resumo card-resumo-renda">
     <h2>Renda</h2>
-    <p class="card-resumo-valor">R$ {{ total_renda|floatformat:2 }}</p>
+    <p class="card-resumo-valor">R$ {{ total_renda|floatformat:2|localize }}</p>
     <p class="card-resumo-label">Entradas de dinheiro</p>
     <a href="{% url 'rendamensal:cadastro_renda' %}" class="btn btn-sm">Ver detalhes</a>
   </div>
@@ -18,7 +19,7 @@
 <div class="dashboard-grid">
   <div class="card card-resumo card-resumo-despesas">
     <h2>Despesas</h2>
-    <p class="card-resumo-valor">R$ {{ total_despesas|floatformat:2 }}</p>
+    <p class="card-resumo-valor">R$ {{ total_despesas|floatformat:2|localize }}</p>
     <p class="card-resumo-label">Gastos gerais</p>
     <a href="{% url 'despesas:lista_despesas' %}" class="btn btn-sm">Ver detalhes</a>
   </div>
@@ -38,7 +39,7 @@
         <ul class="list-unstyled">
           {% for d in despesas_vencidas %}
             <li>
-              🧾 {{ d.nome }} — R$ {{ d.valor|floatformat:2 }}
+              🧾 {{ d.nome }} — R$ {{ d.valor|floatformat:2|localize }}
               — {{ d.data_vencimento|date:"d/m/Y" }}
             </li>
           {% endfor %}
@@ -55,7 +56,7 @@
         <ul class="list-unstyled">
           {% for d in despesas_vence_hoje %}
             <li>
-              🧾 {{ d.nome }} — R$ {{ d.valor|floatformat:2 }} — hoje
+              🧾 {{ d.nome }} — R$ {{ d.valor|floatformat:2|localize  }} — hoje
             </li>
           {% endfor %}
         </ul>
@@ -71,7 +72,7 @@
         <ul class="list-unstyled">
           {% for d in despesas_proximas %}
             <li>
-              🧾 {{ d.nome }} — R$ {{ d.valor|floatformat:2 }}
+              🧾 {{ d.nome }} — R$ {{ d.valor|floatformat:2|localize  }}
               — {{ d.data_vencimento|date:"d/m" }}
             </li>
           {% endfor %}
@@ -87,7 +88,7 @@
 <div class="dashboard-grid">
   <div class="card card-resumo card-resumo-financiamentos">
     <h2>Financiamentos</h2>
-    <p class="card-resumo-valor">R$ {{ total_financiamentos|floatformat:2 }}</p>
+    <p class="card-resumo-valor">R$ {{ total_financiamentos|floatformat:2|localize }}</p>
     <p class="card-resumo-label">Parcelas e dívidas</p>
     <a href="{% url 'financiamentos:lista_financiamentos' %}" class="btn btn-sm">Ver detalhes</a>
   </div>
@@ -107,7 +108,7 @@
         <ul class="list-unstyled">
           {% for f in financ_vencidos %}
             <li>
-              🏦 {{ f.credor }} — R$ {{ f.valor_parcela|floatformat:2 }}
+              🏦 {{ f.credor }} — R$ {{ f.valor_parcela|floatformat:2|localize  }}
               — {{ f.data_vencimento|date:"d/m/Y" }}
             </li>
           {% endfor %}
@@ -124,7 +125,7 @@
         <ul class="list-unstyled">
           {% for f in financ_vence_hoje %}
             <li>
-              🏦 {{ f.credor }} — R$ {{ f.valor_parcela|floatformat:2 }} — hoje
+              🏦 {{ f.credor }} — R$ {{ f.valor_parcela|floatformat:2|localize  }} — hoje
             </li>
           {% endfor %}
         </ul>
@@ -140,7 +141,7 @@
         <ul class="list-unstyled">
           {% for f in financ_proximos %}
             <li>
-              🏦 {{ f.credor }} — R$ {{ f.valor_parcela|floatformat:2 }}
+              🏦 {{ f.credor }} — R$ {{ f.valor_parcela|floatformat:2|localize  }}
               — {{ f.data_vencimento|date:"d/m" }}
             </li>
           {% endfor %}
@@ -159,12 +160,12 @@
   <p>
     {% if saldo >= 0 %}
       <span style="color:#00b894; font-size:1.4rem; font-weight:bold;">
-        R$ {{ saldo|floatformat:2 }}
+        R$ {{ saldo|floatformat:2|localize }}
       </span>
       <span> • Situação positiva 🙂</span>
     {% else %}
       <span style="color:#ff7675; font-size:1.4rem; font-weight:bold;">
-        R$ {{ saldo|floatformat:2 }}
+        R$ {{ saldo|floatformat:2|localize  }}
       </span>
       <span> • Atenção: gastos maiores que a renda 😬</span>
     {% endif %}

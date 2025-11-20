@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Esqueci minha senha</title>
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}" />
+  </head>
+  <body class="auth-page">
+    <div class="auth-card">
+      <div class="auth-right">
+        <div class="auth-logo">Gerenciador de Dívidas e Financiamentos</div>
+        <h1 class="auth-title">Recuperar senha</h1>
+        <p class="auth-subtitle">
+          Informe seu <strong>nome de usuário</strong> ou <strong>e-mail</strong>.
+          Vamos gerar uma senha temporária pra você entrar e depois trocar.
+        </p>
+
+        <form method="post" class="auth-form">
+          {% csrf_token %}
+
+          {% if erro %}
+            <ul class="errorlist"><li>{{ erro }}</li></ul>
+          {% endif %}
+
+          <div class="form-group">
+            <label for="id_identificador">Usuário ou e-mail</label>
+            <input
+              type="text"
+              id="id_identificador"
+              name="identificador"
+              placeholder="ex: maria ou maria@email.com"
+              required
+            />
+          </div>
+
+          <button type="submit" class="auth-btn-main">
+            Gerar nova senha
+          </button>
+        </form>
+
+        {% if nova_senha %}
+          <div class="card" style="margin-top: 16px;">
+            <h2 style="font-size:1rem; margin-top:0;">Senha temporária gerada</h2>
+            <p>
+              Use a senha abaixo para entrar no sistema. Depois, altere sua senha
+              no painel de usuário.
+            </p>
+            <p style="font-size:1.2rem; font-weight:bold;">
+              {{ nova_senha }}
+            </p>
+            <a href="{% url 'contas:login' %}" class="btn">
+              Ir para tela de login
+            </a>
+          </div>
+        {% endif %}
+
+        <div class="auth-divider">
+          Lembrou da senha?
+          <a href="{% url 'contas:login' %}">Voltar para o login</a>
+        </div>
+
+        <div class="auth-footer">
+          © 2025 Gerenciador de Dívidas e Financiamentos – Todos os direitos reservados.
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

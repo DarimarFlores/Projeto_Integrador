@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Meta de Poupança{% endblock %}
+{% load l10n %}
 
 {% block content %}
 <h1>Meta de Poupança</h1>
@@ -10,13 +11,13 @@
   <div class="card meta-card">
     <h2>Situação do mês de {{ mes_atual_nome }}</h2>
     <ul class="meta-situacao-lista">
-      <li>Renda do mês: R$ {{ total_renda_mes|floatformat:2 }}</li>
-      <li>Despesas do mês: R$ {{ total_despesas_mes|floatformat:2 }}</li>
-      <li>Financiamentos do mês: R$ {{ total_financiamentos_mes|floatformat:2 }}</li>
+      <li>Renda do mês: R$ {{ total_renda_mes|floatformat:2|localize }}</li>
+      <li>Despesas do mês: R$ {{ total_despesas_mes|floatformat:2|localize }}</li>
+      <li>Financiamentos do mês: R$ {{ total_financiamentos_mes|floatformat:2|localize }}</li>
       <li>
         Saldo do mês:
         <strong style="color:#00b894;">
-          R$ {{ saldo_mes|floatformat:2 }}
+          R$ {{ saldo_mes|floatformat:2|localize}}
         </strong>
       </li>
     </ul>
@@ -55,18 +56,18 @@
     {# 2) simulou e NÃO deu erro (temos valores válidos) #}
     {% elif not mostrar_erro %}
       <p>
-        Para juntar <strong>R$ {{ valor_meta|floatformat:2 }}</strong> em
+        Para juntar <strong>R$ {{ valor_meta|floatformat:2|localize }}</strong> em
         <strong>{{ prazo_meses }}</strong> mês(es),
         você precisa guardar aproximadamente
-        <strong>R$ {{ poupanca_mensal|floatformat:2 }}</strong> por mês.
+        <strong>R$ {{ poupanca_mensal|floatformat:2|localize }}</strong> por mês.
       </p>
 
       {% if saldo_mes > 0 and saldo_mes >= poupanca_mensal %}
         <hr>
         <p>
-          Com o seu saldo atual de <strong>R$ {{ saldo_mes|floatformat:2 }}</strong> por mês,
+          Com o seu saldo atual de <strong>R$ {{ saldo_mes|floatformat:2|localize }}</strong> por mês,
           você levaria cerca de
-          <strong>{{ prazo_ideal|floatformat:1 }}</strong> mês(es)
+          <strong>{{ prazo_ideal|floatformat:1|localize}}</strong> mês(es)
           para atingir essa meta, se guardar todo o saldo positivo.
         </p>
       {% else %}

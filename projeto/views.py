@@ -1,5 +1,6 @@
 from datetime import date, timedelta
 import json
+import math
 
 from django.shortcuts import render
 from django.db.models import Sum
@@ -157,7 +158,7 @@ def meta_poupanca(request):
 
                 # aqui uso saldo_mes (float) sem erro de tipo
                 if saldo_mes > 0:
-                    prazo_ideal = vm / saldo_mes
+                    prazo_ideal = math.ceil(vm / saldo_mes)
             else:
                 mostrar_erro = True
 

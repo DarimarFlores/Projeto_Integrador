@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Renda Mensal{% endblock %}
+{% load l10n %}
+
 {% block content %}
 
 <div class="container mt-4">
@@ -40,7 +42,7 @@
           {% endif %}
         {% endfor %}
         – <span class="fw-bold text-success">
-          R$ {{ total_mes_atual|floatformat:2 }}
+          R$ {{ total_mes_atual|floatformat:2|localize}}
         </span>
       </h3>
     </div>
@@ -85,7 +87,7 @@
             <tr>
               <td>{{ renda.get_mes_display }}</td>
               <td>{{ renda.get_tipo_display }}</td>
-              <td>R$ {{ renda.valor|floatformat:2 }}</td>
+              <td>R$ {{ renda.valor|floatformat:2|localize }}</td>
               <td>{{ renda.data_recebimento|date:"d/m/Y" }}</td>
 
               {% if mostrar_botoes %}

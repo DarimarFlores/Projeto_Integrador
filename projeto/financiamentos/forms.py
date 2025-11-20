@@ -35,11 +35,8 @@ class FinanciamentoForm(forms.ModelForm):
         fields = [
             'mes',
             'credor',
-            'tipo',    
-            'valor_total',
-            'numero_parcelas',      
-            'valor_parcela',
-            'taxa_juros',                        
+            'tipo',                             
+            'valor_parcela',                                   
             'data_inicio',
             'data_fim',
             'data_vencimento',

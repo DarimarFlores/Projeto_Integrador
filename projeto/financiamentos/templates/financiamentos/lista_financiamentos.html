@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}Financiamentos{% endblock %}
+{% load l10n %}
 
 {% block content %}
 <div class="container mt-4">
@@ -49,7 +50,7 @@
     <div class="card-body">
       <h2 class="h6 mb-0">
         Total das parcelas do mês:
-        <span class="fw-bold text-success">R$ {{ total_mes|floatformat:2 }}</span>
+        <span class="fw-bold text-success">R$ {{ total_mes|floatformat:2|localize }}</span>
       </h2>
     </div>
   </div>
@@ -60,53 +61,58 @@
     <div class="card-body">
       <div class="table-responsive">
         <table class="tabela-despesas">
-          <thead>
-            <tr>
-              <th>Mês</th>
-              <th>Credor</th>
-              <th>Tipo</th>
-              <th>Valor Total</th>
-              <th>Número Parcelas</th>              
-              <th>Valor Parcela</th>
-              <th>Taxa Juros</th>
-              <th>Data Início</th>
-              <th>Data Fim</th>
-              <th>Data Vencimento</th>
-              <th>Pago</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for f in financiamentos %}
-            <tr>
-              <td>{{ f.get_mes_display }}</td>
-              <td>{{ f.credor }}</td>
-              <td>{{ f.get_tipo_display }}</td>                                        
-              <td>R$ {{ f.valor_parcela|floatformat:2 }}</td>
-              <td>{{ f.data_vencimento|date:"d/m/Y" }}</td>
-              
-              <td>
-                {% if f.pago %}
-                  <span class="badge bg-success"><i class="bi bi-check-circle"></i></span>
-                {% else %}
-                  <span class="badge bg-danger"><i class="bi bi-hourglass-split"></i></span>
-                {% endif %}
-              </td>
+  <thead>
+    <tr>
+      <th>Mês</th>
+      <th>Credor</th>
+      <th>Tipo</th>
+      <th>Valor da Parcela</th>
+      <th>Data de Vencimento</th>
+      <th>Pago</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for f in financiamentos %}
+    <tr>
+      <td>{{ f.get_mes_display }}</td>
+      <td>{{ f.credor }}</td>
+      <td>{{ f.get_tipo_display }}</td>
+      <td>R$ {{ f.valor_parcela|floatformat:2|localize }}</td>
+      <td>{{ f.data_vencimento|date:"d/m/Y" }}</td>
 
-              <td>
-                {% if mostrar_botoes %}
-                  <div class="tabela-acoes">
-                    <a href="{% url 'financiamentos:editar_financiamento' f.id %}" class="btn-acao" title="Editar"><i class="fa-solid fa-pen-to-square"></i></a>
-                    <a href="{% url 'financiamentos:remover_financiamento' f.id %}" class="btn-acao btn-acao-remover" title="Remover" onclick="return confirm('Tem certeza que deseja remover este financiamento?');"><i class="bi bi-trash"></i></a>
-                  </div>
-                {% endif %}
-              </td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="8" class="text-center">Nenhum financiamento cadastrado.</td></tr>
-            {% endfor %}
-          </tbody>
-        </table>
+      <td>
+        {% if f.pago %}
+          <span class="badge bg-success"><i class="bi bi-check-circle"></i></span>
+        {% else %}
+          <span class="badge bg-danger"><i class="bi bi-hourglass-split"></i></span>
+        {% endif %}
+      </td>
+
+      <td>
+        {% if mostrar_botoes %}
+          <div class="tabela-acoes">
+            <a href="{% url 'financiamentos:editar_financiamento' f.id %}"
+               class="btn-acao" title="Editar">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </a>
+
+            <a href="{% url 'financiamentos:remover_financiamento' f.id %}"
+               class="btn-acao btn-acao-remover" title="Remover"
+               onclick="return confirm('Tem certeza que deseja remover este financiamento?');">
+              <i class="bi bi-trash"></i>
+            </a>
+          </div>
+        {% endif %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="7" class="text-center">Nenhum financiamento cadastrado.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
       </div>
     </div>
   </div>
