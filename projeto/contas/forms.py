@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
 import re
 
 class CadastroForm (UserCreationForm):
@@ -16,7 +17,10 @@ class CadastroForm (UserCreationForm):
         }
 
     def clean_password1(self):
-        senha = self.cleaned_data_get("password1")
+        senha = self.cleaned_data.get("password1")
+
+        if not senha:
+            raise forms.ValidationError("Digite uma senha válida.")
 
         # a senha deve ter mínimo 8 caracteres
         if len(senha) < 8:
@@ -37,6 +41,8 @@ class CadastroForm (UserCreationForm):
         # a senha deve ter pelo um caracter especial
         if not re.search(r"[@$!%*#?&.,;:_+=-]", senha):
             raise forms.ValidationError("A senha deve conter pelo menos um caracter especial (@, #, !, $, %, etc.).")
+        
+        validate_password(senha)
     
         return senha
 

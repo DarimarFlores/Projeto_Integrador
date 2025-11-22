@@ -11,4 +11,5 @@ urlpatterns = [
     path('financiamentos/', include('projeto.financiamentos.urls', namespace='financiamentos')),
     path('contas/', include('projeto.contas.urls', namespace='contas')),
     path('relatorios/mensal/', views.relatorio_mensal, name='relatorio_mensal'),
+    path('alertas/', views.alertas, name='alertas'),
 ]

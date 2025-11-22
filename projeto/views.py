@@ -41,6 +41,9 @@ def inicio(request):
     # saldo = renda - (despesas + financiamentos)
     saldo = total_renda - (total_despesas + total_financiamentos)
 
+    # alertas
+    alertas_contexto = alertas()
+
     # --------- dados mês a mês para o gráfico ---------
     labels = []
     renda_por_mes = []
@@ -85,23 +88,27 @@ def inicio(request):
         'saldo_por_mes_json': json.dumps(saldo_por_mes),
     }
 
+    # junta o contexto das alertas com o contexo principal
+    contexto.update(alertas_contexto)
+
     return render(request, 'inicio.html', contexto)
 
-    # alertas para despesas e financiamentos
-def alertas_financiamentos(request):
+# alertas para despesas e financiamentos
+def alertas():
     hoje = date.today()
     limite = hoje + timedelta(days=5)
 
-   
-    financ_vencidas = Financiamento.objects.filter(pago=False, data_vencimento__lt=hoje).order_by('data_vencimento')
+    # financiamentos
+    financ_vencidos = Financiamento.objects.filter(pago=False, data_vencimento__lt=hoje).order_by('data_vencimento')
     financ_vence_hoje = Financiamento.objects.filter(pago=False, data_vencimento=hoje).order_by('credor')
     financ_proximos = Financiamento.objects.filter(pago=False, data_vencimento__gt=hoje, data_vencimento__lte=limite).order_by('data_vencimento')
 
+    # despesas
     despesas_vencidas = Despesa.objects.filter(pago=False, data_vencimento__lt=hoje).order_by('data_vencimento')
-    despesas_vence_hoje = Despesa.objects.filter(pago=False, data_vencimento=hoje).order_by('credor')
+    despesas_vence_hoje = Despesa.objects.filter(pago=False, data_vencimento=hoje).order_by('nome')
     despesas_proximas = Despesa.objects.filter(pago=False, data_vencimento__gt=hoje, data_vencimento__lte=limite).order_by('data_vencimento')
     
-    contexto = {
+    return {
         'financ_vencidos': financ_vencidos,
         'financ_vence_hoje': financ_vence_hoje,
         'financ_proximos': financ_proximos,
@@ -110,10 +117,7 @@ def alertas_financiamentos(request):
         'despesas_proximas': despesas_proximas,
         'hoje': hoje,
         'limite': limite,
-
-    }
-    return render(request, 'financiamentos/inicio.html', contexto)
-
+    } 
 
 def meta_poupanca(request):
     mes_atual = date.today().strftime('%m')

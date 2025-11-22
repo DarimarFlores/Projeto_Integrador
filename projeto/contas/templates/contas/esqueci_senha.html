@@ -10,58 +10,61 @@
     <div class="auth-card">
       <div class="auth-right">
         <div class="auth-logo">Gerenciador de Dívidas e Financiamentos</div>
-        <h1 class="auth-title">Recuperar senha</h1>
+        <h1 class="auth-title">Esqueci minha senha</h1>
         <p class="auth-subtitle">
-          Informe seu <strong>nome de usuário</strong> ou <strong>e-mail</strong>.
-          Vamos gerar uma senha temporária pra você entrar e depois trocar.
+          Informe seu nome de usuário ou e-mail. Vamos gerar uma senha temporária.
         </p>
+
+        {% if erro %}
+          <p style="color:#fecaca; font-size:0.9rem; margin-bottom:10px;">
+            {{ erro }}
+          </p>
+        {% endif %}
 
         <form method="post" class="auth-form">
           {% csrf_token %}
-
-          {% if erro %}
-            <ul class="errorlist"><li>{{ erro }}</li></ul>
-          {% endif %}
-
           <div class="form-group">
             <label for="id_identificador">Usuário ou e-mail</label>
             <input
               type="text"
-              id="id_identificador"
               name="identificador"
-              placeholder="ex: maria ou maria@email.com"
+              id="id_identificador"
               required
             />
           </div>
 
-          <button type="submit" class="auth-btn-main">
-            Gerar nova senha
-          </button>
+          <button type="submit" class="auth-btn-main">Gerar nova senha</button>
         </form>
 
         {% if nova_senha %}
-          <div class="card" style="margin-top: 16px;">
-            <h2 style="font-size:1rem; margin-top:0;">Senha temporária gerada</h2>
-            <p>
-              Use a senha abaixo para entrar no sistema. Depois, altere sua senha
-              no painel de usuário.
-            </p>
-            <p style="font-size:1.2rem; font-weight:bold;">
+          <div class="card" style="margin-top:20px;">
+            <p>Sua senha temporária é:</p>
+            <p
+              style="
+                font-family: monospace;
+                font-size: 1.2rem;
+                background: #020617;
+                padding: 8px 10px;
+                border-radius: 8px;
+                display:inline-block;
+                margin: 8px 0;
+              "
+            >
               {{ nova_senha }}
             </p>
-            <a href="{% url 'contas:login' %}" class="btn">
-              Ir para tela de login
+            <p style="font-size:0.85rem; color:#9ca3af;">
+              Use essa senha como <strong>senha atual</strong> na próxima tela e defina uma nova senha segura.
+            </p>
+
+            <a href="{% url 'contas:trocar_senha' %}" class="auth-btn-main" style="text-align:center; display:inline-block; margin-top:8px;">
+              Trocar senha agora
             </a>
           </div>
         {% endif %}
 
-        <div class="auth-divider">
-          Lembrou da senha?
-          <a href="{% url 'contas:login' %}">Voltar para o login</a>
-        </div>
-
         <div class="auth-footer">
-          © 2025 Gerenciador de Dívidas e Financiamentos – Todos os direitos reservados.
+          © 2025 Gerenciador de Dívidas e Financiamentos – Todos os direitos
+          reservados.
         </div>
       </div>
     </div>
