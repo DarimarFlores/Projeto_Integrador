@@ -12,8 +12,6 @@ from projeto.financiamentos.models import Financiamento
 from django.contrib.auth.decorators import login_required
 
 @login_required
-
-
 def inicio(request):
     mes_atual = date.today().strftime('%m')
 
@@ -23,26 +21,23 @@ def inicio(request):
 
     # --------- totais do mês atual ---------
     total_renda = (
-        Renda.objects.filter(mes=mes_atual)
+        Renda.objects.filter(usuario=request.user, mes=mes_atual)
         .aggregate(total=Sum('valor'))['total'] or 0
     )
 
     total_despesas = (
-        Despesa.objects.filter(mes=mes_atual)
+        Despesa.objects.filter(usuario=request.user, mes=mes_atual)
         .aggregate(total=Sum('valor'))['total'] or 0
     )
 
     # aqui é valor_total, porque Financiamento não tem campo "valor"
     total_financiamentos = (
-        Financiamento.objects.filter(mes=mes_atual)
+        Financiamento.objects.filter(usuario=request.user, mes=mes_atual)
         .aggregate(total=Sum('valor_parcela'))['total'] or 0
     )
 
     # saldo = renda - (despesas + financiamentos)
     saldo = total_renda - (total_despesas + total_financiamentos)
-
-    # alertas
-    alertas_contexto = alertas()
 
     # --------- dados mês a mês para o gráfico ---------
     labels = []
@@ -55,17 +50,17 @@ def inicio(request):
         labels.append(nome)
 
         renda_mes = (
-            Renda.objects.filter(mes=codigo)
+            Renda.objects.filter(usuario=request.user, mes=codigo)
             .aggregate(total=Sum('valor'))['total'] or 0
         )
 
         despesa_mes = (
-            Despesa.objects.filter(mes=codigo)
+            Despesa.objects.filter(usuario=request.user, mes=codigo)
             .aggregate(total=Sum('valor'))['total'] or 0
         )
 
         financ_mes = (
-            Financiamento.objects.filter(mes=codigo)
+            Financiamento.objects.filter(usuario=request.user, mes=codigo)
             .aggregate(total=Sum('valor_parcela'))['total'] or 0
         )
 
@@ -89,24 +84,25 @@ def inicio(request):
     }
 
     # junta o contexto das alertas com o contexo principal
+    alertas_contexto = alertas(request.user)
     contexto.update(alertas_contexto)
 
     return render(request, 'inicio.html', contexto)
 
 # alertas para despesas e financiamentos
-def alertas():
+def alertas(usuario):
     hoje = date.today()
     limite = hoje + timedelta(days=5)
 
     # financiamentos
-    financ_vencidos = Financiamento.objects.filter(pago=False, data_vencimento__lt=hoje).order_by('data_vencimento')
-    financ_vence_hoje = Financiamento.objects.filter(pago=False, data_vencimento=hoje).order_by('credor')
-    financ_proximos = Financiamento.objects.filter(pago=False, data_vencimento__gt=hoje, data_vencimento__lte=limite).order_by('data_vencimento')
+    financ_vencidos = Financiamento.objects.filter(usuario=usuario, pago=False, data_vencimento__lt=hoje).order_by('data_vencimento')
+    financ_vence_hoje = Financiamento.objects.filter(usuario=usuario, pago=False, data_vencimento=hoje).order_by('credor')
+    financ_proximos = Financiamento.objects.filter(usuario=usuario, pago=False, data_vencimento__gt=hoje, data_vencimento__lte=limite).order_by('data_vencimento')
 
     # despesas
-    despesas_vencidas = Despesa.objects.filter(pago=False, data_vencimento__lt=hoje).order_by('data_vencimento')
-    despesas_vence_hoje = Despesa.objects.filter(pago=False, data_vencimento=hoje).order_by('nome')
-    despesas_proximas = Despesa.objects.filter(pago=False, data_vencimento__gt=hoje, data_vencimento__lte=limite).order_by('data_vencimento')
+    despesas_vencidas = Despesa.objects.filter(usuario=usuario,pago=False, data_vencimento__lt=hoje).order_by('data_vencimento')
+    despesas_vence_hoje = Despesa.objects.filter(usuario=usuario,pago=False, data_vencimento=hoje).order_by('nome')
+    despesas_proximas = Despesa.objects.filter(usuario=usuario,pago=False, data_vencimento__gt=hoje, data_vencimento__lte=limite).order_by('data_vencimento')
     
     return {
         'financ_vencidos': financ_vencidos,
@@ -119,20 +115,22 @@ def alertas():
         'limite': limite,
     } 
 
+@login_required
 def meta_poupanca(request):
     mes_atual = date.today().strftime('%m')
     meses_choices = Renda.MES_CHOICES
     mes_atual_nome = dict(meses_choices).get(mes_atual, '')
+    usuario = request.user
 
     # --- Situação do mês atual ---
     total_renda_mes = (
-        Renda.objects.filter(mes=mes_atual).aggregate(total=Sum('valor'))['total'] or 0
+        Renda.objects.filter(usuario=usuario, mes=mes_atual).aggregate(total=Sum('valor'))['total'] or 0
     )
     total_despesas_mes = (
-        Despesa.objects.filter(mes=mes_atual).aggregate(total=Sum('valor'))['total'] or 0
+        Despesa.objects.filter(usuario=usuario, mes=mes_atual).aggregate(total=Sum('valor'))['total'] or 0
     )
     total_financiamentos_mes = (
-        Financiamento.objects.filter(mes=mes_atual).aggregate(total=Sum('valor_parcela'))['total'] or 0
+        Financiamento.objects.filter(usuario=usuario, mes=mes_atual).aggregate(total=Sum('valor_parcela'))['total'] or 0
     )
 
     # saldo_mes pode vir como Decimal; converto pra float pra contas simples
@@ -191,7 +189,9 @@ def meta_poupanca(request):
 
     return render(request, 'meta_poupanca.html', contexto)
 
+@login_required
 def relatorio_mensal(request):
+    usuario = request.user
     mes_param = request.GET.get('mes')
     mes_atual = date.today().strftime('%m')
 
@@ -204,22 +204,22 @@ def relatorio_mensal(request):
     mes_nome = dict(meses_choices).get(mes_filtro, '')
 
     total_renda_mes = (
-        Renda.objects.filter(mes=mes_filtro).aggregate(total=Sum('valor'))['total'] or 0
+        Renda.objects.filter(usuario=usuario, mes=mes_filtro).aggregate(total=Sum('valor'))['total'] or 0
     )
 
     total_despesas_mes = (
-        Despesa.objects.filter(mes=mes_filtro).aggregate(total=Sum('valor'))['total'] or 0
+        Despesa.objects.filter(usuario=usuario, mes=mes_filtro).aggregate(total=Sum('valor'))['total'] or 0
     )
 
     total_financiamentos_mes = (
-        Financiamento.objects.filter(mes=mes_filtro).aggregate(total=Sum('valor_parcela'))['total'] or 0
+        Financiamento.objects.filter(usuario=usuario, mes=mes_filtro).aggregate(total=Sum('valor_parcela'))['total'] or 0
     )
 
     saldo_mes = total_renda_mes - (total_despesas_mes + total_financiamentos_mes)
 
-    rendas = Renda.objects.filter(mes=mes_filtro).order_by('data_recebimento')
-    despesas = Despesa.objects.filter(mes=mes_filtro).order_by('data_vencimento')
-    financiamentos = Financiamento.objects.filter(mes=mes_filtro).order_by('data_vencimento')
+    rendas = Renda.objects.filter(usuario=usuario, mes=mes_filtro).order_by('data_recebimento')
+    despesas = Despesa.objects.filter(usuario=usuario, mes=mes_filtro).order_by('data_vencimento')
+    financiamentos = Financiamento.objects.filter(usuario=usuario, mes=mes_filtro).order_by('data_vencimento')
 
     contexto = {
         'meses': meses_choices,

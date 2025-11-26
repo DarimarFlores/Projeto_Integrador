@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.conf import settings
 
 # Create your models here.
 class Renda(models.Model):
@@ -25,6 +26,14 @@ class Renda(models.Model):
         ('RE', 'Renda Extra'),
         ('O', 'Outras'),
     ]
+
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='rendas',
+        null=True,
+        blank=True,
+    )
 
     mes = models.CharField('Mês', max_length=60, choices=MES_CHOICES) 
     tipo = models.CharField('Tipo de renda', max_length=2, choices=TIPO_CHOICES, default='S')

@@ -2,24 +2,6 @@ from django import forms
 from .models import Financiamento
 
 class FinanciamentoForm(forms.ModelForm):
-    data_inicio = forms.DateField(
-        required=False,
-        widget=forms.DateInput(
-            attrs={'type': 'date'},
-            format='%Y-%m-%d'
-        ),
-        input_formats=['%Y-%m-%d'],
-    )
-
-    data_fim = forms.DateField(
-        required=False,
-        widget=forms.DateInput(
-            attrs={'type': 'date'},
-            format='%Y-%m-%d'
-        ),
-        input_formats=['%Y-%m-%d'],
-    )
-
     data_vencimento = forms.DateField(
         required=False,
         widget=forms.DateInput(
@@ -36,20 +18,14 @@ class FinanciamentoForm(forms.ModelForm):
             'mes',
             'credor',
             'tipo',                             
-            'valor_parcela',                                   
-            'data_inicio',
-            'data_fim',
+            'valor_parcela',                                  
             'data_vencimento',
             'pago',
         ]
         widgets = {
-            'data_inicio': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
-            'data_fim': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
             'data_vencimento': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['data_inicio'].input_formats = ['%Y-%m-%d']
-        self.fields['data_fim'].input_formats = ['%Y-%m-%d']
         self.fields['data_vencimento'].input_formats = ['%Y-%m-%d']

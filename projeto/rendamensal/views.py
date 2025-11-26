@@ -8,9 +8,6 @@ from .models import Renda
 from django.contrib.auth.decorators import login_required
 
 @login_required
-
-
-# Create your views here.
 def cadastroRenda(request):
     mes_param = request.GET.get('mes')          # None, '', ou '01'...'12'
     mes_corrente = date.today().strftime('%m')  # mês atual do sistema
@@ -25,7 +22,8 @@ def cadastroRenda(request):
     else:
         mes_filtro = mes_param
 
-    rendas_qs = Renda.objects.all()
+    # filtro apenas rendas do usuário logado
+    rendas_qs = Renda.objects.filter(usuario=request.user)
 
     # filtro por mês
     if mes_filtro:
@@ -62,14 +60,19 @@ def cadastroRenda(request):
 
     return render(request, 'rendamensal/cadastro_renda.html', contexto)
 
+@login_required
 def nova_renda(request):
     mes_param = request.GET.get('mes')  # opcional, pra voltar pro mesmo mês depois
 
     if request.method == 'POST':
         form = RendaForm(request.POST)
         if form.is_valid():
-            renda = form.save()
-            # depois de salvar, volta pra lista filtrada pelo mês da renda
+            # não salva direto, para poder amarrar ao usuário
+            renda = form.save(commit=False)
+            renda.usuario = request.user  # renda do usuário logado
+            renda.save()
+           
+           # depois de salvar, volta pra lista filtrada pelo mês da renda
             redirect_mes = renda.mes or mes_param
             if redirect_mes:
                 return redirect(f'/rendamensal/?mes={redirect_mes}')
@@ -81,8 +84,10 @@ def nova_renda(request):
 
     return render(request, 'rendamensal/nova_renda.html', {'form': form})
 
+@login_required
 def editar_renda(request, id):
-    renda = get_object_or_404(Renda, id=id)
+    # só encontra renda se for do usuário logado
+    renda = get_object_or_404(Renda, id=id, usuario=request.user)
 
     # Descobre o mês dessa renda para voltar para o mesmo filtro depois
     mes_param = renda.mes or date.today().strftime('%m')
@@ -97,8 +102,10 @@ def editar_renda(request, id):
 
     return render(request, 'rendamensal/editar_renda.html', {'form': form, 'renda': renda})
 
+@login_required
 def remover_renda(request, id):
-    renda = get_object_or_404(Renda, id=id)
+    # só apaga se a renda for do usuario logado
+    renda = get_object_or_404(Renda, id=id, usuario=request.user)
     mes_param = renda.mes or date.today().strftime('%m')
     renda.delete()
     return redirect(f'/rendamensal/?mes={mes_param}')

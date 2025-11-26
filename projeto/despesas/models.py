@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 class Despesa(models.Model):
     MES_CHOICES = [
@@ -30,6 +31,14 @@ class Despesa(models.Model):
         ('V', 'Variável'),
         ('I', 'Investimento'),
     ]
+
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='despesas',
+        null=True,
+        blank=True,
+    )
 
     mes = models.CharField(
         max_length=60,

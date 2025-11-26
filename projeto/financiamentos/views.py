@@ -8,7 +8,6 @@ from .forms import FinanciamentoForm
 from django.contrib.auth.decorators import login_required
 
 @login_required
-
 def lista_financiamentos(request):    
     mes_param = request.GET.get('mes')
     status_param = request.GET.get('status')
@@ -23,7 +22,8 @@ def lista_financiamentos(request):
         # usuário escolhe um mês específico
         mes_filtro = mes_param
     
-    financ_qs = Financiamento.objects.all()
+    # financiamentos do usuário logado
+    financ_qs = Financiamento.objects.filter(usuario=request.user)
 
     # filtro por mês
     if mes_filtro:
@@ -62,37 +62,47 @@ def lista_financiamentos(request):
     }
     return render(request, 'financiamentos/lista_financiamentos.html', contexto)
 
+@login_required
 def novo_financiamento(request):
     mes_param = request.GET.get('mes', date.today().strftime('%m'))
 
     if request.method == 'POST':
         form = FinanciamentoForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect(f'/financiamentos/?mes={mes_param}')
+            financiamento = form.save(commit=False)
+            financiamento.usuario = request.user
+            financiamento.save()
+
+            redirect_mes = financiamento.mes or mes_param
+            if redirect_mes:
+                # volta para o mês do financiamento ou pro filtro da URL
+                return redirect(f'/financiamentos/?mes={redirect_mes}')
+            return redirect('financiamentos:lista_financiamentos')
     else:
-        form = FinanciamentoForm()
+        initial = {'mes': mes_param} if mes_param else None
+        form = FinanciamentoForm(initial=initial)
 
     return render(request, 'financiamentos/novo_financiamento.html', {'form': form, 'meses': Financiamento.MES_CHOICES})
 
-
+@login_required
 def editar_financiamento(request, id):
-    financiamento = get_object_or_404(Financiamento, id=id)
+    financiamento = get_object_or_404(Financiamento, id=id, usuario=request.user)
     mes_param = financiamento.mes or date.today().strftime('%m')
 
     if request.method == 'POST':
         form = FinanciamentoForm(request.POST, instance=financiamento)
         if form.is_valid():
-            form.save()
-            return redirect(f'/financiamentos/?mes={mes_param}')
+            financiamento = form.save()
+            redirect_mes = financiamento.mes or mes_param
+            return redirect(f'/financiamentos/?mes={redirect_mes}')
     else:
         form = FinanciamentoForm(instance=financiamento)
 
     return render(request, 'financiamentos/editar_financiamento.html', {'form': form, 'financiamento': financiamento})
 
-
+@login_required
 def remover_financiamento(request, id):
-    financiamento = get_object_or_404(Financiamento, id=id)
+    financiamento = get_object_or_404(Financiamento, id=id, usuario=request.user)
     mes_param = financiamento.mes or date.today().strftime('%m')
     financiamento.delete()
     return redirect(f'/financiamentos/?mes={mes_param}')

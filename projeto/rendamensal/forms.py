@@ -13,7 +13,7 @@ class RendaForm(forms.ModelForm):
 
     class Meta:
         model = Renda
-        fields = '__all__'
+        fields = ['mes', 'tipo', 'valor', 'data_recebimento']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
