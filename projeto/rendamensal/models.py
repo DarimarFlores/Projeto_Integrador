@@ -1,8 +1,12 @@
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
+from datetime import date
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
 
-# Create your models here.
+LIMITE_MINIMO_DATA = date(2000,1,1)
+
 class Renda(models.Model):
     MES_CHOICES = [
         ('01', 'Janeiro'),
@@ -38,7 +42,29 @@ class Renda(models.Model):
     mes = models.CharField('Mês', max_length=60, choices=MES_CHOICES) 
     tipo = models.CharField('Tipo de renda', max_length=2, choices=TIPO_CHOICES, default='S')
     valor = models.DecimalField('Valor', max_digits=10, decimal_places=2)    
-    data_recebimento = models.DateField('Data de recebimento', default=timezone.now)
+    data_recebimento = models.DateField(
+        'Data de recebimento',
+        default=timezone.now,
+        validators=[
+            MinValueValidator(LIMITE_MINIMO_DATA),
+            MaxValueValidator(date.today),
+        ]
+    )
+
+    def clean(self):
+        # chama a validação padrão de django
+        super().clean()
+
+        # só valida se a data_recebimento estiver preenchido
+        if self.data_recebimento:
+            mes_da_data = self.data_recebimento.month
+            mes_do_campo= int(self.mes)
+
+            if mes_da_data != mes_do_campo:
+                raise ValidationError({
+                    'data_recebimento':'A data de recebimento deve ser do mesmo mes selecionado.'
+                })
+    
 
     def __str__(self):        
         return f"{self.get_mes_display()} - {self.get_tipo_display()} - R$ {self.valor}"

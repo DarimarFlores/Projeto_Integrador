@@ -1,5 +1,9 @@
 from django.db import models
 from django.conf import settings
+from datetime import date
+from django.core.validators import MinValueValidator, MaxValueValidator
+
+LIMITE_MINIMO_DATA = date(2000,1,1)
 
 class Despesa(models.Model):
     MES_CHOICES = [
@@ -76,13 +80,21 @@ class Despesa(models.Model):
     data_vencimento = models.DateField(
         'Data de vencimento',
         null=True,
-        blank=True
+        blank=True,
+        validators=[
+            MinValueValidator(LIMITE_MINIMO_DATA),
+            MaxValueValidator(date.today),
+        ]
     )
 
     data_pagamento = models.DateField(
         'Data de pagamento',
         null=True,
-        blank=True
+        blank=True,
+        validators=[
+            MinValueValidator(LIMITE_MINIMO_DATA),
+            MaxValueValidator(date.today),
+        ]
     )
 
     pago = models.BooleanField(
