@@ -11,6 +11,15 @@ class FinanciamentoForm(forms.ModelForm):
         input_formats=['%Y-%m-%d'],
     )
 
+    data_pagamento = forms.DateField(
+        required=False,
+        widget=forms.DateInput(
+            attrs={'type': 'date'},
+            format='%Y-%m-%d'
+        ),
+        input_formats=['%Y-%m-%d'],
+    )
+
 
     class Meta:
         model = Financiamento
@@ -20,10 +29,12 @@ class FinanciamentoForm(forms.ModelForm):
             'tipo',                             
             'valor_parcela',                                  
             'data_vencimento',
+            'data_pagamento',
             'pago',
         ]
         widgets = {
             'data_vencimento': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
+            'data_pagamento': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
         }
 
     def __init__(self, *args, **kwargs):

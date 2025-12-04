@@ -10,7 +10,7 @@
     <h1 class="h3 mb-0">Financiamentos</h1>
     <p>Gerencie aqui seus financiamentos e parcelas mensais.</p>
     <a href="{% url 'financiamentos:novo_financiamento' %}" class="btn btn-primary btn-sm">
-      + Novo Financiamento
+      Novo Financiamento
     </a>
   </div>
 
@@ -68,6 +68,7 @@
       <th>Tipo</th>
       <th>Valor da Parcela</th>
       <th>Data de Vencimento</th>
+      <th>Data de Pagamento</th>
       <th>Pago</th>
       <th>Ações</th>
     </tr>
@@ -80,6 +81,7 @@
       <td>{{ f.get_tipo_display }}</td>
       <td>R$ {{ f.valor_parcela|floatformat:2|localize }}</td>
       <td>{{ f.data_vencimento|date:"d/m/Y" }}</td>
+      <td>{{ f.data_pagamento|date:"d/m/Y" }}</td>
 
       <td>
         {% if f.pago %}

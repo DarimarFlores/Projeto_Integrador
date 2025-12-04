@@ -1,5 +1,11 @@
 from django.db import models
 from django.conf import settings
+from datetime import date
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
+
+LIMITE_MINIMO_DATA = date(2000,1,1)
+
 
 class Financiamento(models.Model):
     MES_CHOICES = [
@@ -34,9 +40,52 @@ class Financiamento(models.Model):
     valor_parcela = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Valor da Parcela', null=True, blank=True)    
         
     # datas
-    data_vencimento= models.DateField(verbose_name='Vencimento da parcela', null=True, blank=True)
+    data_vencimento= models.DateField(
+        'Data de vencimento',
+        null=True,
+        blank=True, 
+        validators=[
+            MinValueValidator(LIMITE_MINIMO_DATA),
+            MaxValueValidator(date.today),
+        ]
+    )
+
+    data_pagamento= models.DateField(
+        'Data de pagamento',
+        null=True,
+        blank=True,
+        validators=[
+            MinValueValidator(LIMITE_MINIMO_DATA),
+            MaxValueValidator(date.today),
+        ]
+    )
     
     pago = models.BooleanField(default=False, verbose_name='Pago')
+
+    def clean(self):
+        super().clean()
+
+        # só valida se os dois campos estiverem preenchidos
+        if self.mes:
+            mes_do_registro = int(self.mes)
+
+            # validar data de vencimento
+            if self.data_vencimento:
+                mes_da_data_vencimento = self.data_vencimento.month
+                ano_da_data_vencimento = self.data_vencimento.year
+
+                # validar mês
+                if mes_da_data_vencimento != mes_do_registro:
+                    raise ValidationError({
+                        'data_vencimento': 'A data de vencimento deve ser do mês selecionado.'
+                    })
+                
+                # bloquear ano futuro
+                ano_atual = date.today().year
+                if ano_da_data_vencimento > ano_atual:
+                    raise ValidationError({
+                        'data_vencimento': 'A data de vencimento não pode ser de um ano futuro.'
+                    })
 
     def __str__(self):
         return f"{self.credor} - {self.get_tipo_display()} ({self.get_mes_display()})"

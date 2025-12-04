@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from datetime import date
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
 
 LIMITE_MINIMO_DATA = date(2000,1,1)
 
@@ -83,7 +84,6 @@ class Despesa(models.Model):
         blank=True,
         validators=[
             MinValueValidator(LIMITE_MINIMO_DATA),
-            MaxValueValidator(date.today),
         ]
     )
 
@@ -101,6 +101,23 @@ class Despesa(models.Model):
         'Pago?',
         default=False
     )
+
+    def clean(self):
+        # chama as validações padrão do django
+        super().clean()
+
+        # só valida se o campo mes estiver preenchido
+        if self.mes:
+            mes_do_registro = int(self.mes)
+
+            # validar data_vencimento
+            if self.data_vencimento:
+                mes_da_data_vencimento = self.data_vencimento.month 
+                if mes_da_data_vencimento != mes_do_registro:
+                    raise ValidationError({
+                        'data_vencimento': 'A data de vencimento deve ser do mês selecionado.'
+                    }) 
+
 
     def __str__(self):
         return f"{self.nome or 'Despesa sem nome'} - {self.get_mes_display()}"
