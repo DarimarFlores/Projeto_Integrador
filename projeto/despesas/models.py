@@ -8,18 +8,10 @@ LIMITE_MINIMO_DATA = date(2000,1,1)
 
 class Despesa(models.Model):
     MES_CHOICES = [
-        ('01', 'Janeiro'),
-        ('02', 'Fevereiro'),
-        ('03', 'Março'),
-        ('04', 'Abril'),
-        ('05', 'Maio'),
-        ('06', 'Junho'),
-        ('07', 'Julho'),
-        ('08', 'Agosto'),
-        ('09', 'Setembro'),
-        ('10', 'Outubro'),
-        ('11', 'Novembro'),
-        ('12', 'Dezembro'),
+        ('01', 'Janeiro'), ('02', 'Fevereiro'), ('03', 'Março'),
+        ('04', 'Abril'), ('05', 'Maio'), ('06', 'Junho'),
+        ('07', 'Julho'), ('08', 'Agosto'), ('09', 'Setembro'),
+        ('10', 'Outubro'), ('11', 'Novembro'), ('12', 'Dezembro'),
     ]
 
     FREQUENCIA_CHOICES = [
@@ -54,14 +46,13 @@ class Despesa(models.Model):
     nome = models.CharField(
         'Nome da despesa',
         max_length=100,
-        null=True,
-        blank=True
     )
 
     valor = models.DecimalField(
         'Valor',
         max_digits=10,
-        decimal_places=2
+        decimal_places=2,
+        validators=[MinValueValidator(0)]
     )
 
     frequencia = models.CharField(
@@ -79,11 +70,9 @@ class Despesa(models.Model):
     )
 
     data_vencimento = models.DateField(
-        'Data de vencimento',
-        null=True,
-        blank=True,
+        'Data de vencimento',        
         validators=[
-            MinValueValidator(LIMITE_MINIMO_DATA),
+            MinValueValidator(LIMITE_MINIMO_DATA),            
         ]
     )
 
@@ -108,16 +97,42 @@ class Despesa(models.Model):
 
         # só valida se o campo mes estiver preenchido
         if self.mes:
-            mes_do_registro = int(self.mes)
+            mes_atual = int(self.mes)
+            ano_atual = date.today().year
 
-            # validar data_vencimento
+            # validar data de vencimento
             if self.data_vencimento:
-                mes_da_data_vencimento = self.data_vencimento.month 
-                if mes_da_data_vencimento != mes_do_registro:
+                mes_vencimento = self.data_vencimento.month
+                ano_vencimento = self.data_vencimento.year
+
+                # validar  mês data de vencimento
+                if mes_vencimento != mes_atual:
                     raise ValidationError({
                         'data_vencimento': 'A data de vencimento deve ser do mês selecionado.'
-                    }) 
+                    })
+                
+                # validar ano data de vencimento
+                if ano_vencimento != ano_atual:
+                    raise ValidationError({
+                        'data_vencimento': 'A data de vencimento deve ser do ano atual.'
+                    })
 
+            # validar data pagamento
+            if self.data_pagamento:
+                mes_pagamento = self.data_pagamento.month
+                ano_pagamento = self.data_pagamento.year
+
+                # validar  mês data de pagamento
+                if mes_pagamento != mes_atual:
+                    raise ValidationError({
+                        'data_pagamento': 'A data de pagamento deve ser do mês selecionado.'
+                    })
+                
+                # validar ano data de pagamento
+                if ano_pagamento != ano_atual:
+                    raise ValidationError({
+                        'data_pagamento': 'A data de pagamento deve ser do ano atual.'
+                    })
 
     def __str__(self):
         return f"{self.nome or 'Despesa sem nome'} - {self.get_mes_display()}"

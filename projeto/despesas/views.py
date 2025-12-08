@@ -1,8 +1,6 @@
 from datetime import date
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
-
 from .models import Despesa
 from .forms import DespesaForm
 from django.contrib.auth.decorators import login_required
@@ -76,7 +74,7 @@ def lista_despesas(request):
 
 @login_required
 def nova_despesa(request):
-    mes_param = request.GET.get('mes')
+    mes_param = request.GET.get('mes', date.today().strftime('%m'))
 
     if request.method == 'POST':
         form = DespesaForm(request.POST)

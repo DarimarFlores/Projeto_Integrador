@@ -9,7 +9,7 @@
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit" class="btn">Salvar</button>
-    <a href="{% url 'rendamensal:cadastro_renda' %}?mes={{ renda.mes }}"
+    <a href="{% url 'rendamensal:lista_rendas' %}?mes={{ renda.mes }}"
        class="btn" style="margin-left:8px;">Cancelar</a>
   </form>
 </div>

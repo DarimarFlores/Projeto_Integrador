@@ -32,21 +32,35 @@ class Financiamento(models.Model):
     )
 
 
-    mes = models.CharField(max_length=60, choices=MES_CHOICES, verbose_name='Mês')
-    credor = models.CharField(max_length=100, verbose_name='Credor')
-    tipo = models.CharField(max_length=10, choices=TIPO_CHOICES, default='OUTRO', verbose_name='Tipo')      
+    mes = models.CharField(
+        max_length=60,
+        choices=MES_CHOICES,
+        verbose_name='Mês'
+    )
+
+    credor = models.CharField(
+        max_length=100,
+        verbose_name='Credor'
+    )
+
+    tipo = models.CharField(
+        max_length=10,
+        choices=TIPO_CHOICES,
+        default='OUTRO',
+        verbose_name='Tipo'
+    )      
     
-    # valores
-    valor_parcela = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Valor da Parcela', null=True, blank=True)    
+    valor_parcela = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name='Valor da Parcela',
+        validators=[MinValueValidator(0)]
+    )    
         
-    # datas
     data_vencimento= models.DateField(
-        'Data de vencimento',
-        null=True,
-        blank=True, 
+        'Data de vencimento',               
         validators=[
-            MinValueValidator(LIMITE_MINIMO_DATA),
-            MaxValueValidator(date.today),
+            MinValueValidator(LIMITE_MINIMO_DATA),            
         ]
     )
 
@@ -67,25 +81,40 @@ class Financiamento(models.Model):
 
         # só valida se os dois campos estiverem preenchidos
         if self.mes:
-            mes_do_registro = int(self.mes)
+            mes_atual= int(self.mes)
+            ano_atual = date.today().year
 
-            # validar data de vencimento
             if self.data_vencimento:
-                mes_da_data_vencimento = self.data_vencimento.month
-                ano_da_data_vencimento = self.data_vencimento.year
+                mes_vencimento = self.data_vencimento.month
+                ano_vencimento = self.data_vencimento.year
 
-                # validar mês
-                if mes_da_data_vencimento != mes_do_registro:
+                # validar  mês data de vencimento
+                if mes_vencimento != mes_atual:
                     raise ValidationError({
                         'data_vencimento': 'A data de vencimento deve ser do mês selecionado.'
                     })
-                
-                # bloquear ano futuro
-                ano_atual = date.today().year
-                if ano_da_data_vencimento > ano_atual:
+            
+                 # validar ano data de vencimento
+                if ano_vencimento != ano_atual:
                     raise ValidationError({
-                        'data_vencimento': 'A data de vencimento não pode ser de um ano futuro.'
+                        'data_vencimento': 'A data de vencimento deve ser do ano atual.'
                     })
+
+            if self.data_pagamento:            
+                mes_pagamento = self.data_pagamento.month
+                ano_pagamento = self.data_pagamento.year        
+                
+                # validar mês data de pagamento
+                if mes_pagamento != mes_atual:
+                    raise ValidationError({
+                        'data_pagamento': 'A data de pagamento deve ser do mês selecionado.'
+                    })
+
+                # validar ano data de pagamento
+                if ano_pagamento != ano_atual:
+                    raise ValidationError({
+                        'data_pagamento': 'A data de pagamento deve ser do ano atual.' 
+                    })                
 
     def __str__(self):
         return f"{self.credor} - {self.get_tipo_display()} ({self.get_mes_display()})"

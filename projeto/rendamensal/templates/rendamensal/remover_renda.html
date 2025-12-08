@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
-{% block title %}Remover despesa{% endblock %}
+{% block title %}Remover Renda{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-  <h1 class="h4 mb-3 text-danger">Remover Despesa</h1>
+  <h1 class="h4 mb-3 text-danger">Remover Renda</h1>
 
   <div class="alert alert-warning">
-    Tem certeza que deseja remover a despesa
-    <strong>{{ despesa.nome }}</strong>?
+    Tem certeza que deseja remover a renda
+    <strong>{{ renda.nome }}</strong>?
     Essa ação não pode ser desfeita.
   </div>
 
@@ -17,7 +17,7 @@
     <button type="submit" class="btn btn-danger">
       Confirmar remoção
     </button>
-    <a href="{% url 'despesas:lista_despesas' %}" class="btn btn-secondary">
+    <a href="{% url 'rendamensal:lista_rendas' %}" class="btn btn-secondary">
       Cancelar
     </a>
   </form>

@@ -1,14 +1,12 @@
 from datetime import date
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
-
 from .forms import RendaForm
 from .models import Renda
 from django.contrib.auth.decorators import login_required
 
 @login_required
-def cadastroRenda(request):
+def lista_rendas(request):
     mes_param = request.GET.get('mes')          # None, '', ou '01'...'12'
     mes_corrente = date.today().strftime('%m')  # mês atual do sistema
 
@@ -58,11 +56,11 @@ def cadastroRenda(request):
         'mostrar_botoes': mostrar_botoes,
     }
 
-    return render(request, 'rendamensal/cadastro_renda.html', contexto)
+    return render(request, 'rendamensal/lista_rendas.html', contexto)
 
 @login_required
 def nova_renda(request):
-    mes_param = request.GET.get('mes')  # opcional, pra voltar pro mesmo mês depois
+    mes_param = request.GET.get('mes', date.today().strftime('%m'))  # opcional, pra voltar pro mesmo mês depois
 
     if request.method == 'POST':
         form = RendaForm(request.POST)
@@ -76,7 +74,7 @@ def nova_renda(request):
             redirect_mes = renda.mes or mes_param
             if redirect_mes:
                 return redirect(f'/rendamensal/?mes={redirect_mes}')
-            return redirect('rendamensal:cadastro_renda')
+            return redirect('rendamensal:lista_rendas')
     else:
         # se vier ?mes=02 na URL, já deixa o campo "mes" preenchido
         initial = {'mes': mes_param} if mes_param else None
@@ -104,9 +102,11 @@ def editar_renda(request, id):
 
 @login_required
 def remover_renda(request, id):
-    # só apaga se a renda for do usuario logado
-    renda = get_object_or_404(Renda, id=id, usuario=request.user)
-    mes_param = renda.mes or date.today().strftime('%m')
-    renda.delete()
-    return redirect(f'/rendamensal/?mes={mes_param}')
+    renda = get_object_or_404(Renda, id=id)  # sem usuario=request.user só pra testar
+
+    if request.method == 'POST':
+        renda.delete()
+        return redirect('rendamensal:lista_rendas')
+
+    return render(request, 'rendamensal/remover_renda.html', {'renda': renda})
 #prova do que gitignore esta funcionando

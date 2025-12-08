@@ -1,26 +1,7 @@
 from django import forms
 from .models import Despesa
 
-class DespesaForm(forms.ModelForm):
-    # Campos de data com formato compatível com <input type="date">
-    data_vencimento = forms.DateField(
-        required=False,
-        widget=forms.DateInput(
-            attrs={'type': 'date'},
-            format='%Y-%m-%d'
-        ),
-        input_formats=['%Y-%m-%d'],
-    )
-
-    data_pagamento = forms.DateField(
-        required=False,
-        widget=forms.DateInput(
-            attrs={'type': 'date'},
-            format='%Y-%m-%d'
-        ),
-        input_formats=['%Y-%m-%d'],
-    )
-
+class DespesaForm(forms.ModelForm):   
     class Meta:
         model = Despesa
         fields = [
@@ -33,3 +14,8 @@ class DespesaForm(forms.ModelForm):
             'data_pagamento',
             'pago',
         ]
+
+        widgets = {
+            'data_vencimento': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
+            'data_pagamento': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
+        }

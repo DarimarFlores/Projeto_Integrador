@@ -1,8 +1,6 @@
 from datetime import date
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
-
 from .models import Financiamento
 from .forms import FinanciamentoForm
 from django.contrib.auth.decorators import login_required
@@ -103,6 +101,9 @@ def editar_financiamento(request, id):
 @login_required
 def remover_financiamento(request, id):
     financiamento = get_object_or_404(Financiamento, id=id, usuario=request.user)
-    mes_param = financiamento.mes or date.today().strftime('%m')
-    financiamento.delete()
-    return redirect(f'/financiamentos/?mes={mes_param}')
+    
+    if request.method == 'POST':
+        financiamento.delete()
+        return redirect('financiamentos:lista_financiamentos') 
+
+    return render(request, 'financiamentos/remover_financiamento.html', {'financiamento': financiamento})
