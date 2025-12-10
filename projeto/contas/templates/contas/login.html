@@ -40,6 +40,16 @@
           Entre com seu usuário e senha para ver seu painel financeiro.
         </p>
 
+         {% if messages %}
+          <div class="auth-messages">
+            {% for message in messages %}
+              <div class="alert {{ message.tags }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
         <form method="post" class="auth-form">
           {% csrf_token %} {{ form.non_field_errors }}
 

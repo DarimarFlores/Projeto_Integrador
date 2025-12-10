@@ -16,8 +16,33 @@ class CadastroForm (UserCreationForm):
             'password2': 'Confirme a senha',
         }
 
+    # validar nome de usuário único
+    def clean_username(self):
+        username = self.cleaned_data.get("username")
+        
+        if not username:
+            raise forms.ValidationError("Escreva um nome de usuário")
+        
+        # verifica se já existe algum usuário com esse username
+        if User.objects.filter(username__iexact=username).exists():
+            raise forms.ValidationError("Esse nome de usuário já está sendo usado.")
+        return username
+
+    # validar email único
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+
+        if not email:
+            raise forms.ValidationError("Escreva um e-mail válido.")
+        
+        # verifica se existe algum usuário com esse mesmo email
+        if User.objects.filter(email__iexact=email).exists():
+            raise forms.ValidationError("Já existe um usuário com este e-mail.")
+        return email
+
+    
     def clean_password1(self):
-        senha = self.cleaned_data.get("password1")
+        senha = self.cleaned_data.get("password1") 
 
         if not senha:
             raise forms.ValidationError("Digite uma senha válida.")

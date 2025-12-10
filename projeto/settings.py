@@ -91,7 +91,7 @@ DATABASES = {
         'USER': 'postgres',            # seu usuário
         'PASSWORD': 'e3d4r35tsq354d2E',       # coloque sua senha real
         'HOST': 'localhost',           # ou IP do servidor
-        'PORT': '5432',                # porta padrão do Postgres
+        'PORT': '5433',                # porta padrão do Postgres
     }
 }
 

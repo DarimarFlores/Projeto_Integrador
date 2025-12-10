@@ -69,8 +69,10 @@
       <th>Valor da Parcela</th>
       <th>Data de Vencimento</th>
       <th>Data de Pagamento</th>
-      <th>Pago</th>
-      <th>Ações</th>
+      <th>Status</th>
+        {% if mostrar_botoes %}
+          <th style="width: 200px;">Ações</th>
+        {% endif %}      
     </tr>
   </thead>
   <tbody>
@@ -94,12 +96,12 @@
       <td>
         {% if mostrar_botoes %}
           <div class="tabela-acoes">
-            <a href="{% url 'financiamentos:editar_financiamento' f.id %}"
+            <a href="{% url 'financiamentos:editar_financiamento' f.id %}?mes={{ mes }}{% if status %}&status={{ status }}{% endif %}"
                class="btn-acao" title="Editar">
               <i class="fa-solid fa-pen-to-square"></i>
             </a>
 
-            <a href="{% url 'financiamentos:remover_financiamento' f.id %}"
+            <a href="{% url 'financiamentos:remover_financiamento' f.id %}?mes={{ mes }}{% if status %}&status={{ status }}{% endif %}"
                class="btn-acao btn-acao-remover" title="Remover"
                onclick="return confirm('Tem certeza que deseja remover este financiamento?');">
               <i class="bi bi-trash"></i>

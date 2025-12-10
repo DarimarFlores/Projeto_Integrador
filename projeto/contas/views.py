@@ -13,7 +13,7 @@ from .forms import CadastroForm
 
 class LoginCustomView(LoginView):
     template_name = 'contas/login.html'
-    redirect_authenticated_user = True  # se já estiver logado, manda pro início
+    redirect_authenticated_user = False  # # sempre mostra a tela de login
 
 
 # ---------- CADASTRO ----------
@@ -22,6 +22,11 @@ def registrar(request):
         form = CadastroForm(request.POST)
         if form.is_valid():
             form.save()
+
+            # não fica logado depois do cadastro
+            logout(request)
+
+            # mensaagem que aparece na tela do login
             messages.success(request, 'Cadastro realizado com sucesso! Faça login.')
             return redirect('contas:login')
     else:
