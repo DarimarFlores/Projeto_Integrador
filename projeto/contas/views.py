@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import login, logout, update_session_auth_hash
-from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -76,20 +76,18 @@ def esqueci_senha(request):
                 user.set_password(nova_senha)
                 user.save()
 
-                # loga o usuário com a senha temporária
-                login(request, user)
-
-                # marca na sessão que essa senha é temporária
-                request.session['senha_temporaria'] = True
+                # NÃO loga o usuário aqui
+                # NÃO coloca nada na sessão
 
                 messages.info(
                     request,
-                    f"Sua senha temporária é: {nova_senha}. "
-                    "Use-a para acessar agora e em seguida defina uma nova senha."
+                    "Senha temporária gerada com sucesso. "
+                    "Use essa senha para fazer login e depois troque por uma senha definitiva."
                 )
 
-                # manda direto para a tela de trocar senha
-                return redirect('contas:trocar_senha')
+                # em vez de redirecionar, vamos renderizar a mesma página
+                # para mostrar a senha no card (nova_senha)
+                # return redirect('contas:login')  # se quiser, pode usar isso e tirar o card do template
 
             except User.DoesNotExist:
                 erro = 'Usuário ou e-mail não encontrado.'
@@ -104,32 +102,20 @@ def esqueci_senha(request):
 # ---------- TROCAR SENHA ----------
 @login_required
 def trocar_senha(request):
-    # se o usuário estiver usando senha temporaria o sistema usa SetPasswordForm, caso contrário usa PasswordChangeForm
-    usando_senha_temporaria = bool(request.session.get('senha_temporaria'))
-    
-    # escolhe qual formulário usar
-    if usando_senha_temporaria:
-        FormClass = SetPasswordForm
-    else:
-        FormClass = PasswordChangeForm
-
     if request.method == 'POST':
-        form = FormClass(request.user, request.POST)
+        form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
             # mantém o usuário logado depois de trocar a senha
             update_session_auth_hash(request, user)
 
-            # se era senha temporaria remove a flag de senha temporária
-            if usando_senha_temporaria:
-                request.session.pop('senha_temporaria', None)
-
             messages.success(request, 'Senha alterada com sucesso!')
             return redirect('inicio')
     else:
-        form = FormClass(request.user)
+        form = PasswordChangeForm(request.user)
 
     return render(request, 'contas/trocar_senha.html', {'form': form})
+
 
 
     

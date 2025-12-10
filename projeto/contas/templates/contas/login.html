@@ -110,5 +110,36 @@
         });
       });
     </script>
+
+    <style>
+      /* Limita a largura do formulário */
+      .auth-form {
+        max-width: 340px;
+      }
+
+      /* Campos e botão com a MESMA largura dentro do form */
+      .auth-form input,
+      .auth-form .password-wrapper,
+      .auth-form .auth-btn-main {
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      /* Garante que o olho não aperta o campo de senha */
+      .password-wrapper {
+        display: flex;
+        align-items: center;
+      }
+
+      .password-wrapper input {
+        flex: 1;
+      }
+
+      .password-wrapper .toggle-password {
+        margin-left: 8px;
+      }
+    </style>
+
+
   </body>
 </html>

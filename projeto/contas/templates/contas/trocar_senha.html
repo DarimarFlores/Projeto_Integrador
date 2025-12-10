@@ -15,31 +15,85 @@
     {% csrf_token %}
     {{ form.non_field_errors }}
 
+    <!-- SENHA ATUAL -->
     <div class="form-group">
       <label for="{{ form.old_password.id_for_label }}">
         {{ form.old_password.label }}
       </label>
       {{ form.old_password.errors }}
-      {{ form.old_password }}
+
+      <div class="password-wrapper">
+        {{ form.old_password }}
+        <button
+          type="button"
+          class="toggle-password"
+          data-target="{{ form.old_password.id_for_label }}"
+        >
+          👁
+        </button>
+      </div>
     </div>
 
+    <!-- NOVA SENHA -->
     <div class="form-group">
       <label for="{{ form.new_password1.id_for_label }}">
         {{ form.new_password1.label }}
       </label>
       {{ form.new_password1.errors }}
-      {{ form.new_password1 }}
+
+      <div class="password-wrapper">
+        {{ form.new_password1 }}
+        <button
+          type="button"
+          class="toggle-password"
+          data-target="{{ form.new_password1.id_for_label }}"
+        >
+          👁
+        </button>
+      </div>
     </div>
 
+    <!-- CONFIRMAR SENHA -->
     <div class="form-group">
       <label for="{{ form.new_password2.id_for_label }}">
         {{ form.new_password2.label }}
       </label>
       {{ form.new_password2.errors }}
-      {{ form.new_password2 }}
+
+      <div class="password-wrapper">
+        {{ form.new_password2 }}
+        <button
+          type="button"
+          class="toggle-password"
+          data-target="{{ form.new_password2.id_for_label }}"
+        >
+          👁
+        </button>
+      </div>
     </div>
 
     <button type="submit" class="auth-btn-main">Salvar nova senha</button>
   </form>
 </div>
+
+<!-- SCRIPT PARA MOSTRAR/OCULTAR SENHAS -->
+<script>
+  document.querySelectorAll(".toggle-password").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      const targetId = this.getAttribute("data-target");
+      const input = document.getElementById(targetId);
+
+      if (!input) return;
+
+      if (input.type === "password") {
+        input.type = "text";
+        this.textContent = "🙈";
+      } else {
+        input.type = "password";
+        this.textContent = "👁";
+      }
+    });
+  });
+</script>
+
 {% endblock %}
