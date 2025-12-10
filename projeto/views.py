@@ -93,16 +93,17 @@ def inicio(request):
 def alertas(usuario):
     hoje = date.today()
     limite = hoje + timedelta(days=5)
+    mes_atual = hoje.strftime('%m')
 
     # financiamentos
-    financ_vencidos = Financiamento.objects.filter(usuario=usuario, pago=False, data_vencimento__lt=hoje).order_by('data_vencimento')
-    financ_vence_hoje = Financiamento.objects.filter(usuario=usuario, pago=False, data_vencimento=hoje).order_by('credor')
-    financ_proximos = Financiamento.objects.filter(usuario=usuario, pago=False, data_vencimento__gt=hoje, data_vencimento__lte=limite).order_by('data_vencimento')
+    financ_vencidos = Financiamento.objects.filter(usuario=usuario, mes=mes_atual, pago=False, data_vencimento__lt=hoje).order_by('data_vencimento')
+    financ_vence_hoje = Financiamento.objects.filter(usuario=usuario, mes=mes_atual, pago=False, data_vencimento=hoje).order_by('credor')
+    financ_proximos = Financiamento.objects.filter(usuario=usuario, mes=mes_atual, pago=False, data_vencimento__gt=hoje, data_vencimento__lte=limite).order_by('data_vencimento')
 
     # despesas
-    despesas_vencidas = Despesa.objects.filter(usuario=usuario,pago=False, data_vencimento__lt=hoje).order_by('data_vencimento')
-    despesas_vence_hoje = Despesa.objects.filter(usuario=usuario,pago=False, data_vencimento=hoje).order_by('nome')
-    despesas_proximas = Despesa.objects.filter(usuario=usuario,pago=False, data_vencimento__gt=hoje, data_vencimento__lte=limite).order_by('data_vencimento')
+    despesas_vencidas = Despesa.objects.filter(usuario=usuario, mes=mes_atual,pago=False, data_vencimento__lt=hoje).order_by('data_vencimento')
+    despesas_vence_hoje = Despesa.objects.filter(usuario=usuario, mes=mes_atual,pago=False, data_vencimento=hoje).order_by('nome')
+    despesas_proximas = Despesa.objects.filter(usuario=usuario, mes=mes_atual,pago=False, data_vencimento__gt=hoje, data_vencimento__lte=limite).order_by('data_vencimento')
     
     return {
         'financ_vencidos': financ_vencidos,
